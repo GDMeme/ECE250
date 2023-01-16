@@ -56,21 +56,24 @@ public:
 void Linkedlist::addValues(string x, string y, string z) {
     Node *temp = head;
     Node *copy = head;
-    Node *previousNode = NULL;
-    Node *nodeToDelete;
-    Node *nextNode = NULL;
+    Node *foundNode = NULL;
     int first = 0;
     int second = 0;
     int third = 0;
     bool foundNext = false;
     bool firstFound = false;
     bool secondFound = false;
-    bool thirdFound = false;
 
+    if (temp->name == x) {
+        first = temp->value;
+        firstFound = true;
+    }
+    if (temp->name == y) {
+        second = temp->value;
+        secondFound = true;
+    }
     if (temp->name == z) { // first name in list matches z
-        previousNode = NULL;
-        nextNode = temp->next;
-        thirdFound = true;
+        foundNode = copy;
     }
 
     while (temp->next != NULL) {
@@ -83,49 +86,17 @@ void Linkedlist::addValues(string x, string y, string z) {
             secondFound = true;
         }
         if (temp->next->name == z) {
-            previousNode = copy; // temp keeps getting updated so this doesn't work
-            nodeToDelete = previousNode->next;
-            if (nodeToDelete != NULL) {
-                nextNode = previousNode->next->next;
-            }
-            thirdFound = true;
-        }
-        if (!thirdFound) {
-            previousNode = temp; // temp keeps getting updated so this doesn't work
-            nodeToDelete = previousNode->next;
-            if (nodeToDelete != NULL) {
-                nextNode = previousNode->next->next;
-            }
+            foundNode = copy->next;
         }
         temp = temp->next;
-        if (!thirdFound) {
+        if (!foundNode) {
             copy = copy->next;
         }
     }
 
-    if (temp->name == x) {
-        first = temp->value;
-        firstFound = true;
-    }
-    if (temp->name == y) {
-        second = temp->value;
-        secondFound = true;
-    }
-    if (temp->name == z) {
-        thirdFound = true;
-    }
-
-
-    if (firstFound && secondFound && thirdFound) {
+    if (firstFound && secondFound && foundNode) {
         cout << "success" << endl;
-        Node *newNode = new Node(z, first + second);
-        delete nodeToDelete;
-        if (previousNode) {
-            previousNode->next = newNode;
-        }
-        if (nextNode != NULL) { // in case newNode is the last element of list
-            newNode->next = nextNode;
-        }
+        foundNode->value = first + second;
         return;
     }
     
@@ -135,31 +106,51 @@ void Linkedlist::addValues(string x, string y, string z) {
 
 void Linkedlist::subtractValues(string x, string y, string z) {
     Node *temp = head;
-    Node *first;
-    Node *second;
-    Node *third;
+    Node *copy = head;
+    Node *foundNode = NULL;
+    int first = 0;
+    int second = 0;
+    int third = 0;
+    bool foundNext = false;
     bool firstFound = false;
     bool secondFound = false;
-    bool thirdFound = false;
-    while (temp != NULL) {
-        if (firstFound && secondFound && thirdFound) {
-            cout << "success" << endl;
-            third->value = first->value - second->value;
-            return;
-        }
-        if (temp->name == x) {
-            Node *first = temp;
-            firstFound = true;
-        } else if (temp->name == y) {
-            Node *second = temp;
-            secondFound = true;
-        } else if (temp->name == z) {
-            Node *third = temp;
-            thirdFound = true;
-        }
-        temp = temp->next;
+
+    if (temp->name == x) {
+        first = temp->value;
+        firstFound = true;
+    }
+    if (temp->name == y) {
+        second = temp->value;
+        secondFound = true;
+    }
+    if (temp->name == z) { // first name in list matches z
+        foundNode = copy;
     }
 
+    while (temp->next != NULL) {
+        if (temp->next->name == x) {
+            first = temp->next->value;
+            firstFound = true;
+        }
+        if (temp->next->name == y) {
+            second = temp->next->value;
+            secondFound = true;
+        }
+        if (temp->next->name == z) {
+            foundNode = copy->next;
+        }
+        temp = temp->next;
+        if (!foundNode) {
+            copy = copy->next;
+        }
+    }
+
+    if (firstFound && secondFound && foundNode) {
+        cout << "success" << endl;
+        foundNode->value = first - second;
+        return;
+    }
+    
     cout << "failure" << endl;
     return;
 } 
