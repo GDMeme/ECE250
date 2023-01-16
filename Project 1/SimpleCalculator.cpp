@@ -59,8 +59,6 @@ void LinkedList::addValues(string x, string y, string z) {
     Node *foundNode = NULL;
     int first = 0;
     int second = 0;
-    int third = 0;
-    bool foundNext = false;
     bool firstFound = false;
     bool secondFound = false;
     if (temp->name == x) {
