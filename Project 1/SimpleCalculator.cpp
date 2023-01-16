@@ -2,8 +2,9 @@
 using namespace std;
  
 class Node {
+
 public:
-    int value; // Linkedlist needs access to these variables
+    int value; // LinkedList needs access to these variables
     string name;
     Node* next;
  
@@ -16,22 +17,21 @@ public:
 
 };
 
-class Linkedlist {
+class LinkedList {
 
 private:
-
     int maxLength;
     int currentLength;
  
 public:
     Node* head;
-    Linkedlist(int maxLength) { 
+    LinkedList(int maxLength) { 
         this->head = NULL; 
         this->maxLength = maxLength;
         this->currentLength = 0;
     }
 
-    ~Linkedlist() {
+    ~LinkedList() {
         Node* current = head;
         Node* next;
 
@@ -53,7 +53,7 @@ public:
     void printValue(string);
 };
 
-void Linkedlist::addValues(string x, string y, string z) {
+void LinkedList::addValues(string x, string y, string z) {
     Node *temp = head;
     Node *copy = head;
     Node *foundNode = NULL;
@@ -63,7 +63,6 @@ void Linkedlist::addValues(string x, string y, string z) {
     bool foundNext = false;
     bool firstFound = false;
     bool secondFound = false;
-
     if (temp->name == x) {
         first = temp->value;
         firstFound = true;
@@ -75,7 +74,6 @@ void Linkedlist::addValues(string x, string y, string z) {
     if (temp->name == z) { // first name in list matches z
         foundNode = copy;
     }
-
     while (temp->next != NULL) {
         if (temp->next->name == x) {
             first = temp->next->value;
@@ -93,28 +91,23 @@ void Linkedlist::addValues(string x, string y, string z) {
             copy = copy->next;
         }
     }
-
     if (firstFound && secondFound && foundNode) {
         cout << "success" << endl;
         foundNode->value = first + second;
         return;
     }
-    
     cout << "failure" << endl;
     return;
 }
 
-void Linkedlist::subtractValues(string x, string y, string z) {
+void LinkedList::subtractValues(string x, string y, string z) {
     Node *temp = head;
     Node *copy = head;
     Node *foundNode = NULL;
     int first = 0;
     int second = 0;
-    int third = 0;
-    bool foundNext = false;
     bool firstFound = false;
     bool secondFound = false;
-
     if (temp->name == x) {
         first = temp->value;
         firstFound = true;
@@ -126,7 +119,6 @@ void Linkedlist::subtractValues(string x, string y, string z) {
     if (temp->name == z) { // first name in list matches z
         foundNode = copy;
     }
-
     while (temp->next != NULL) {
         if (temp->next->name == x) {
             first = temp->next->value;
@@ -144,18 +136,16 @@ void Linkedlist::subtractValues(string x, string y, string z) {
             copy = copy->next;
         }
     }
-
     if (firstFound && secondFound && foundNode) {
         cout << "success" << endl;
         foundNode->value = first - second;
         return;
     }
-    
     cout << "failure" << endl;
     return;
 } 
 
-void Linkedlist::printValue(string name) {
+void LinkedList::printValue(string name) {
     Node *temp = head;
     while (temp != NULL) {
         if (temp->name == name) {
@@ -164,20 +154,17 @@ void Linkedlist::printValue(string name) {
         }
         temp = temp->next;
     }
-
     cout << "variable " << name << " not found" << endl;
     return;
 }
  
-void Linkedlist::deleteNode(string name)
+void LinkedList::deleteNode(string name)
 {
     Node *temp1 = head;
- 
     if (head == NULL) { // list is empty
         cout << "failure" << endl;
         return;
     }
-
     if (temp1->name == name) { // delete the first node (because I have to change head)
         cout << "success" << endl;
         currentLength--;
@@ -185,7 +172,6 @@ void Linkedlist::deleteNode(string name)
         delete temp1;
         return;
     }
-
     while (temp1->next != NULL) {
         if (temp1->next->name == name) {
             cout << "success" << endl;
@@ -196,28 +182,24 @@ void Linkedlist::deleteNode(string name)
         }
         temp1 = temp1->next;
     }
-
     cout << "failure" << endl;
     return;
 }
  
-void Linkedlist::insertNode(string name, int val)
+void LinkedList::insertNode(string name, int val)
 {
     if (currentLength == maxLength) {
         cout << "failure" << endl;
         return;
     }
-
     Node* newNode = new Node(name, val);
     bool duplicate = false;
- 
     if (head == NULL) { // list is empty
         cout << "success" << endl;
         currentLength++;
         head = newNode;
         return;
     }
- 
     Node* temp = head;
     while (temp->next != NULL) {
         if (temp->name == name) {
@@ -226,16 +208,13 @@ void Linkedlist::insertNode(string name, int val)
         }
         temp = temp->next;
     }
-    
     if (temp->name == name) {
         duplicate = true;
     }
-
     if (duplicate) {
         cout << "failure" << endl;
         return;
     }
-    
     cout << "success" << endl;
     currentLength++;
     temp->next = newNode;
@@ -244,17 +223,16 @@ void Linkedlist::insertNode(string name, int val)
 
 int main()
 {
-    Linkedlist* list;
-
+    LinkedList* list;
     string cmd;
     while (cin >> cmd) {
         if (cmd == "CRT") {
-            int val;
+            unsigned int val;
             cin >> val;
-            list = new Linkedlist(val);
+            list = new LinkedList(val);
             cout << "success" << endl;
         } else if (cmd == "DEF") {
-            int val;
+            double val;
             string name;
             cin >> name;
             cin >> val;
@@ -266,7 +244,7 @@ int main()
             cin >> name;
             cin >> name2;
             cin >> name3;
-            list->addValues(name, name2, name3); // TEST: duplicate names are allowed in this command
+            list->addValues(name, name2, name3);
         } else if (cmd == "SUB") {
             string name;
             string name2;
@@ -274,7 +252,7 @@ int main()
             cin >> name;
             cin >> name2;
             cin >> name3;
-            list->subtractValues(name, name2, name3); // TEST: duplicate names are allowed in this command
+            list->subtractValues(name, name2, name3);
         } else if (cmd == "REM") {
             string name;
             cin >> name;
@@ -287,13 +265,6 @@ int main()
             break;
         }
     }
-
-    // Node *temp = list->head;
-    // while (temp != NULL) {
-    //     cout << temp->name << endl;
-    //     temp = temp->next;
-    // }
-
     delete list;
     return 0;
 }
