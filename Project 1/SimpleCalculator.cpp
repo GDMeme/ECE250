@@ -42,9 +42,9 @@ public:
         }
     }
  
-    void insertNode(string, int);
+    void addNode(string, int);
  
-    void deleteNode(string);
+    void removeName(string);
 
     void addValues(string, string, string);
 
@@ -158,7 +158,7 @@ void LinkedList::printValue(string name) {
     return;
 }
  
-void LinkedList::deleteNode(string name)
+void LinkedList::removeName(string name)
 {
     Node *temp1 = head;
     if (head == NULL) { // list is empty
@@ -186,7 +186,7 @@ void LinkedList::deleteNode(string name)
     return;
 }
  
-void LinkedList::insertNode(string name, int val)
+void LinkedList::addNode(string name, int val)
 {
     if (currentLength == maxLength) {
         cout << "failure" << endl;
@@ -225,6 +225,9 @@ int main()
 {
     LinkedList* list;
     string cmd;
+    string name;
+    string name2;
+    string name3;
     while (cin >> cmd) {
         if (cmd == "CRT") {
             unsigned int val;
@@ -236,29 +239,21 @@ int main()
             string name;
             cin >> name;
             cin >> val;
-            list->insertNode(name, val);
+            list->addNode(name, val);
         } else if (cmd == "ADD") {
-            string name;
-            string name2;
-            string name3;
             cin >> name;
             cin >> name2;
             cin >> name3;
             list->addValues(name, name2, name3);
         } else if (cmd == "SUB") {
-            string name;
-            string name2;
-            string name3;
             cin >> name;
             cin >> name2;
             cin >> name3;
             list->subtractValues(name, name2, name3);
         } else if (cmd == "REM") {
-            string name;
             cin >> name;
-            list->deleteNode(name);
+            list->removeName(name);
         } else if (cmd == "PRT") {
-            string name;
             cin >> name;
             list->printValue(name);
         } else if (cmd == "END") {
