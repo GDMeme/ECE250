@@ -15,6 +15,8 @@ public:
         this->next = NULL;
     }
 
+    ~Node() { }
+
 };
 
 class LinkedList {
