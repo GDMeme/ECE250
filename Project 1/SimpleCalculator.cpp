@@ -3,12 +3,13 @@ using namespace std;
  
 class Node {
 
-public:
-    int value; // LinkedList needs access to these variables
+private:
+    unsigned int value;
     string name;
     Node* next;
- 
-    Node(string name, int value)
+
+public:
+    Node(string name, unsigned int value)
     {
         this->value = value;
         this->name = name;
@@ -17,16 +18,34 @@ public:
 
     ~Node() { }
 
-};
+    int getValue() {
+        return value;
+    }
 
+    void setValue(int val) {
+        value = val;
+    }
+
+    string getName() {
+        return name;
+    }
+
+    Node* getNext() {
+        return next;
+    }
+
+    void setNext(Node* nextNode) {
+        next = nextNode;
+    }
+};
 class LinkedList {
 
 private:
     int maxLength;
     int currentLength;
+    Node* head;
  
 public:
-    Node* head;
     LinkedList(int maxLength) { 
         this->head = NULL; 
         this->maxLength = maxLength;
@@ -38,13 +57,21 @@ public:
         Node* next;
 
         while (current != NULL) {
-            next = current->next;
+            next = current->getNext();
             delete current;
             current = next;
         }
     }
  
-    void addNode(string, int);
+    Node* getHead() {
+        return head;
+    }
+
+    void setHead(Node* newHead) {
+        head = newHead;
+    }
+
+    void addNode(string, double);
  
     void removeName(string);
 
@@ -55,6 +82,7 @@ public:
     void printValue(string);
 };
 
+
 void LinkedList::addValues(string x, string y, string z) {
     Node *temp = head;
     Node *copy = head;
@@ -63,37 +91,37 @@ void LinkedList::addValues(string x, string y, string z) {
     int second = 0;
     bool firstFound = false;
     bool secondFound = false;
-    if (temp->name == x) {
-        first = temp->value;
+    if (temp->getName() == x) {
+        first = temp->getValue();
         firstFound = true;
     }
-    if (temp->name == y) {
-        second = temp->value;
+    if (temp->getName() == y) {
+        second = temp->getValue();
         secondFound = true;
     }
-    if (temp->name == z) { // first name in list matches z
+    if (temp->getName() == z) { // first name in list matches z
         foundNode = copy;
     }
-    while (temp->next != NULL) {
-        if (temp->next->name == x) {
-            first = temp->next->value;
+    while (temp->getNext() != NULL) {
+        if (temp->getNext()->getName() == x) {
+            first = temp->getNext()->getValue();
             firstFound = true;
         }
-        if (temp->next->name == y) {
-            second = temp->next->value;
+        if (temp->getNext()->getName() == y) {
+            second = temp->getNext()->getValue();
             secondFound = true;
         }
-        if (temp->next->name == z) {
-            foundNode = copy->next;
+        if (temp->getNext()->getName() == z) {
+            foundNode = copy->getNext();
         }
-        temp = temp->next;
+        temp = temp->getNext();
         if (!foundNode) {
-            copy = copy->next;
+            copy = copy->getNext();
         }
     }
     if (firstFound && secondFound && foundNode) {
         cout << "success" << endl;
-        foundNode->value = first + second;
+        foundNode->setValue(first + second);
         return;
     }
     cout << "failure" << endl;
@@ -108,37 +136,37 @@ void LinkedList::subtractValues(string x, string y, string z) {
     int second = 0;
     bool firstFound = false;
     bool secondFound = false;
-    if (temp->name == x) {
-        first = temp->value;
+    if (temp->getName() == x) {
+        first = temp->getValue();
         firstFound = true;
     }
-    if (temp->name == y) {
-        second = temp->value;
+    if (temp->getName() == y) {
+        second = temp->getValue();
         secondFound = true;
     }
-    if (temp->name == z) { // first name in list matches z
+    if (temp->getName() == z) { // first name in list matches z
         foundNode = copy;
     }
-    while (temp->next != NULL) {
-        if (temp->next->name == x) {
-            first = temp->next->value;
+    while (temp->getNext() != NULL) {
+        if (temp->getNext()->getName() == x) {
+            first = temp->getNext()->getValue();
             firstFound = true;
         }
-        if (temp->next->name == y) {
-            second = temp->next->value;
+        if (temp->getNext()->getName() == y) {
+            second = temp->getNext()->getValue();
             secondFound = true;
         }
-        if (temp->next->name == z) {
-            foundNode = copy->next;
+        if (temp->getNext()->getName() == z) {
+            foundNode = copy->getNext();
         }
-        temp = temp->next;
+        temp = temp->getNext();
         if (!foundNode) {
-            copy = copy->next;
+            copy = copy->getNext();
         }
     }
     if (firstFound && secondFound && foundNode) {
         cout << "success" << endl;
-        foundNode->value = first - second;
+        foundNode->setValue(first - second);
         return;
     }
     cout << "failure" << endl;
@@ -148,11 +176,11 @@ void LinkedList::subtractValues(string x, string y, string z) {
 void LinkedList::printValue(string name) {
     Node *temp = head;
     while (temp != NULL) {
-        if (temp->name == name) {
-            cout << temp->value << endl;
+        if (temp->getName() == name) {
+            cout << temp->getValue() << endl;
             return;
         }
-        temp = temp->next;
+        temp = temp->getNext();
     }
     cout << "variable " << name << " not found" << endl;
     return;
@@ -165,28 +193,28 @@ void LinkedList::removeName(string name)
         cout << "failure" << endl;
         return;
     }
-    if (temp1->name == name) { // delete the first node (because I have to change head)
+    if (temp1->getName() == name) { // delete the first node (because I have to change head)
         cout << "success" << endl;
         currentLength--;
-        head = temp1->next;
+        head = temp1->getNext();
         delete temp1;
         return;
     }
-    while (temp1->next != NULL) {
-        if (temp1->next->name == name) {
+    while (temp1->getNext() != NULL) {
+        if (temp1->getNext()->getName() == name) {
             cout << "success" << endl;
             currentLength--;
-            temp1->next = temp1->next->next;
-            delete temp1->next;
+            temp1->setNext(temp1->getNext()->getNext());
+            delete temp1->getNext();
             return;
         }
-        temp1 = temp1->next;
+        temp1 = temp1->getNext();
     }
     cout << "failure" << endl;
     return;
 }
  
-void LinkedList::addNode(string name, int val)
+void LinkedList::addNode(string name, double val)
 {
     if (currentLength == maxLength) {
         cout << "failure" << endl;
@@ -201,14 +229,14 @@ void LinkedList::addNode(string name, int val)
         return;
     }
     Node* temp = head;
-    while (temp->next != NULL) {
-        if (temp->name == name) {
+    while (temp->getNext() != NULL) {
+        if (temp->getName() == name) {
             duplicate = true;
             break;
         }
-        temp = temp->next;
+        temp = temp->getNext();
     }
-    if (temp->name == name) {
+    if (temp->getName() == name) {
         duplicate = true;
     }
     if (duplicate) {
@@ -217,7 +245,7 @@ void LinkedList::addNode(string name, int val)
     }
     cout << "success" << endl;
     currentLength++;
-    temp->next = newNode;
+    temp->setNext(newNode);
     return;
 }
 
