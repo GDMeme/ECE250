@@ -4,12 +4,12 @@ using namespace std;
 class Node {
 
 private:
-    unsigned int value;
+    double value;
     string name;
     Node* next;
 
 public:
-    Node(string name, unsigned int value)
+    Node(string name, double value)
     {
         this->value = value;
         this->name = name;
@@ -22,7 +22,7 @@ public:
         return value;
     }
 
-    void setValue(int val) {
+    void setValue(double val) {
         value = val;
     }
 
@@ -41,12 +41,12 @@ public:
 class LinkedList {
 
 private:
-    int maxLength;
-    int currentLength;
+    unsigned int maxLength;
+    unsigned int currentLength;
     Node* head;
  
 public:
-    LinkedList(int maxLength) { 
+    LinkedList(unsigned int maxLength) { 
         this->head = NULL; 
         this->maxLength = maxLength;
         this->currentLength = 0;
@@ -91,7 +91,7 @@ void LinkedList::addValues(string x, string y, string z) {
     int second = 0;
     bool firstFound = false;
     bool secondFound = false;
-    if (temp->getName() == x) {
+    if (temp->getName() == x) { // check the head node
         first = temp->getValue();
         firstFound = true;
     }
@@ -136,7 +136,7 @@ void LinkedList::subtractValues(string x, string y, string z) {
     int second = 0;
     bool firstFound = false;
     bool secondFound = false;
-    if (temp->getName() == x) {
+    if (temp->getName() == x) { // check the head node
         first = temp->getValue();
         firstFound = true;
     }
@@ -236,10 +236,7 @@ void LinkedList::addNode(string name, double val)
         }
         temp = temp->getNext();
     }
-    if (temp->getName() == name) {
-        duplicate = true;
-    }
-    if (duplicate) {
+    if (temp->getName() == name || duplicate) { // check the last element
         cout << "failure" << endl;
         return;
     }
