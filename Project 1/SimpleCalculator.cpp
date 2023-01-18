@@ -118,12 +118,13 @@ void LinkedList::addValues(string x, string y, string z) {
         if (!foundNode) {
             copy = copy->getNext();
         }
+        if (firstFound && secondFound && foundNode) {
+            cout << "success" << endl;
+            foundNode->setValue(first + second);
+            return;
+        }
     }
-    if (firstFound && secondFound && foundNode) {
-        cout << "success" << endl;
-        foundNode->setValue(first + second);
-        return;
-    }
+    
     cout << "failure" << endl;
     return;
 }
@@ -221,7 +222,6 @@ void LinkedList::addNode(string name, double val)
         return;
     }
     Node* newNode = new Node(name, val);
-    bool duplicate = false;
     if (head == NULL) { // list is empty
         cout << "success" << endl;
         currentLength++;
@@ -231,12 +231,12 @@ void LinkedList::addNode(string name, double val)
     Node* temp = head;
     while (temp->getNext() != NULL) {
         if (temp->getName() == name) {
-            duplicate = true;
-            break;
+            cout << "failure" << endl;
+            return;
         }
         temp = temp->getNext();
     }
-    if (temp->getName() == name || duplicate) { // check the last element
+    if (temp->getName() == name) { // check the last element
         cout << "failure" << endl;
         return;
     }
