@@ -18,7 +18,7 @@ public:
 
     ~Node() { }
 
-    int getValue() {
+    double getValue() {
         return value;
     }
 
@@ -87,8 +87,8 @@ void LinkedList::addValues(string x, string y, string z) {
     Node *temp = head;
     Node *copy = head;
     Node *foundNode = NULL;
-    int first = 0;
-    int second = 0;
+    double first = 0;
+    double second = 0;
     bool firstFound = false;
     bool secondFound = false;
     if (temp->getName() == x) { // check the head node
@@ -124,7 +124,6 @@ void LinkedList::addValues(string x, string y, string z) {
             return;
         }
     }
-    
     cout << "failure" << endl;
     return;
 }
@@ -133,8 +132,8 @@ void LinkedList::subtractValues(string x, string y, string z) {
     Node *temp = head;
     Node *copy = head;
     Node *foundNode = NULL;
-    int first = 0;
-    int second = 0;
+    double first = 0;
+    double second = 0;
     bool firstFound = false;
     bool secondFound = false;
     if (temp->getName() == x) { // check the head node
