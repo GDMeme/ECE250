@@ -62,14 +62,6 @@ public:
             current = next;
         }
     }
- 
-    Node* getHead() {
-        return head;
-    }
-
-    void setHead(Node* newHead) {
-        head = newHead;
-    }
 
     void addNode(string, double);
  
@@ -85,7 +77,6 @@ public:
 
 void LinkedList::addValues(string x, string y, string z) {
     Node *temp = head;
-    Node *copy = head;
     Node *foundNode = NULL;
     double first = 0;
     double second = 0;
@@ -100,7 +91,7 @@ void LinkedList::addValues(string x, string y, string z) {
         secondFound = true;
     }
     if (temp->getName() == z) { // first name in list matches z
-        foundNode = copy;
+        foundNode = temp;
     }
     while (temp->getNext() != NULL) {
         if (temp->getNext()->getName() == x) {
@@ -112,12 +103,9 @@ void LinkedList::addValues(string x, string y, string z) {
             secondFound = true;
         }
         if (temp->getNext()->getName() == z) {
-            foundNode = copy->getNext();
+            foundNode = temp->getNext();
         }
         temp = temp->getNext();
-        if (!foundNode) {
-            copy = copy->getNext();
-        }
         if (firstFound && secondFound && foundNode) {
             cout << "success" << endl;
             foundNode->setValue(first + second);
@@ -130,7 +118,6 @@ void LinkedList::addValues(string x, string y, string z) {
 
 void LinkedList::subtractValues(string x, string y, string z) {
     Node *temp = head;
-    Node *copy = head;
     Node *foundNode = NULL;
     double first = 0;
     double second = 0;
@@ -145,7 +132,7 @@ void LinkedList::subtractValues(string x, string y, string z) {
         secondFound = true;
     }
     if (temp->getName() == z) { // first name in list matches z
-        foundNode = copy;
+        foundNode = temp;
     }
     while (temp->getNext() != NULL) {
         if (temp->getNext()->getName() == x) {
@@ -157,17 +144,14 @@ void LinkedList::subtractValues(string x, string y, string z) {
             secondFound = true;
         }
         if (temp->getNext()->getName() == z) {
-            foundNode = copy->getNext();
+            foundNode = temp->getNext();
         }
         temp = temp->getNext();
-        if (!foundNode) {
-            copy = copy->getNext();
+        if (firstFound && secondFound && foundNode) {
+            cout << "success" << endl;
+            foundNode->setValue(first - second);
+            return;
         }
-    }
-    if (firstFound && secondFound && foundNode) {
-        cout << "success" << endl;
-        foundNode->setValue(first - second);
-        return;
     }
     cout << "failure" << endl;
     return;
