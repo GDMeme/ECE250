@@ -40,6 +40,10 @@ public:
 
 
 void LinkedList::addValues(string x, string y, string z) {
+    if (head == NULL) {
+        cout << "failure" << endl;
+        return;
+    }
     Node *temp = head;
     Node *foundNode = NULL;
     double first = 0;
@@ -57,6 +61,11 @@ void LinkedList::addValues(string x, string y, string z) {
     if (temp->getName() == z) { // first name in list matches z
         foundNode = temp;
     }
+    if (firstFound && secondFound && foundNode) {
+        cout << "success" << endl;
+        foundNode->setValue(first + second);
+        return;
+    }
     while (temp->getNext() != NULL) {
         if (temp->getNext()->getName() == x) {
             first = temp->getNext()->getValue();
@@ -69,18 +78,22 @@ void LinkedList::addValues(string x, string y, string z) {
         if (temp->getNext()->getName() == z) {
             foundNode = temp->getNext();
         }
-        temp = temp->getNext();
         if (firstFound && secondFound && foundNode) {
             cout << "success" << endl;
             foundNode->setValue(first + second);
             return;
         }
+        temp = temp->getNext();
     }
     cout << "failure" << endl;
     return;
 }
 
 void LinkedList::subtractValues(string x, string y, string z) {
+    if (head == NULL) {
+        cout << "failure" << endl;
+        return;
+    }
     Node *temp = head;
     Node *foundNode = NULL;
     double first = 0;
@@ -98,6 +111,11 @@ void LinkedList::subtractValues(string x, string y, string z) {
     if (temp->getName() == z) { // first name in list matches z
         foundNode = temp;
     }
+    if (firstFound && secondFound && foundNode) {
+        cout << "success" << endl;
+        foundNode->setValue(first - second);
+        return;
+    }
     while (temp->getNext() != NULL) {
         if (temp->getNext()->getName() == x) {
             first = temp->getNext()->getValue();
@@ -110,12 +128,12 @@ void LinkedList::subtractValues(string x, string y, string z) {
         if (temp->getNext()->getName() == z) {
             foundNode = temp->getNext();
         }
-        temp = temp->getNext();
         if (firstFound && secondFound && foundNode) {
             cout << "success" << endl;
             foundNode->setValue(first - second);
             return;
         }
+        temp = temp->getNext();
     }
     cout << "failure" << endl;
     return;
@@ -136,27 +154,29 @@ void LinkedList::printValue(string name) {
  
 void LinkedList::removeName(string name)
 {
-    Node *temp1 = head;
     if (head == NULL) { // list is empty
         cout << "failure" << endl;
         return;
     }
-    if (temp1->getName() == name) { // delete the first node (because I have to change head)
+    if (head->getName() == name) { // delete the first node (because I have to change head)
         cout << "success" << endl;
+        Node *temp = head->getNext();
+        delete head;
+        head = temp;
         currentLength--;
-        head = temp1->getNext();
-        delete temp1;
         return;
     }
-    while (temp1->getNext() != NULL) {
-        if (temp1->getNext()->getName() == name) {
+    Node *temp = head;
+    while (temp->getNext() != NULL) {
+        if (temp->getNext()->getName() == name) {
             cout << "success" << endl;
             currentLength--;
-            temp1->setNext(temp1->getNext()->getNext());
-            delete temp1->getNext();
+            Node* nextNode = temp->getNext()->getNext();
+            delete temp->getNext();
+            temp->setNext(nextNode);
             return;
         }
-        temp1 = temp1->getNext();
+        temp = temp->getNext();
     }
     cout << "failure" << endl;
     return;
@@ -168,8 +188,8 @@ void LinkedList::addNode(string name, double val)
         cout << "failure" << endl;
         return;
     }
-    Node* newNode = new Node(name, val);
     if (head == NULL) { // list is empty
+        Node* newNode = new Node(name, val);
         cout << "success" << endl;
         currentLength++;
         head = newNode;
@@ -187,6 +207,7 @@ void LinkedList::addNode(string name, double val)
         cout << "failure" << endl;
         return;
     }
+    Node* newNode = new Node(name, val);
     cout << "success" << endl;
     currentLength++;
     temp->setNext(newNode);
