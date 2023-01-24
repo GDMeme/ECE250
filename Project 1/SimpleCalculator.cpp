@@ -45,28 +45,28 @@ void LinkedList::addValues(string x, string y, string z) {
         cout << "failure" << endl;
         return;
     }
-    Node *temp = head;
     Node *foundNode = NULL;
     double first = 0;
     double second = 0;
     bool firstFound = false;
     bool secondFound = false;
-    if (temp->getName() == x) { // check the head node
-        first = temp->getValue();
+    if (head->getName() == x) { // check the head node
+        first = head->getValue();
         firstFound = true;
     }
-    if (temp->getName() == y) {
-        second = temp->getValue();
+    if (head->getName() == y) {
+        second = head->getValue();
         secondFound = true;
     }
-    if (temp->getName() == z) { // first name in list matches z
-        foundNode = temp;
+    if (head->getName() == z) { // first name in list matches z
+        foundNode = head;
     }
     if (firstFound && secondFound && foundNode) {
         cout << "success" << endl;
         foundNode->setValue(first + second);
         return;
     }
+    Node *temp = head;
     while (temp->getNext() != NULL) {
         if (temp->getNext()->getName() == x) {
             first = temp->getNext()->getValue();
@@ -95,28 +95,28 @@ void LinkedList::subtractValues(string x, string y, string z) {
         cout << "failure" << endl;
         return;
     }
-    Node *temp = head;
     Node *foundNode = NULL;
     double first = 0;
     double second = 0;
     bool firstFound = false;
     bool secondFound = false;
-    if (temp->getName() == x) { // check the head node
-        first = temp->getValue();
+    if (head->getName() == x) { // check the head node
+        first = head->getValue();
         firstFound = true;
     }
-    if (temp->getName() == y) {
-        second = temp->getValue();
+    if (head->getName() == y) {
+        second = head->getValue();
         secondFound = true;
     }
-    if (temp->getName() == z) { // first name in list matches z
-        foundNode = temp;
+    if (head->getName() == z) { // first name in list matches z
+        foundNode = head;
     }
     if (firstFound && secondFound && foundNode) {
         cout << "success" << endl;
         foundNode->setValue(first - second);
         return;
     }
+    Node *temp = head;
     while (temp->getNext() != NULL) {
         if (temp->getNext()->getName() == x) {
             first = temp->getNext()->getValue();
