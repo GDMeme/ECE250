@@ -1,43 +1,7 @@
+#include "Node.h"
 #include <iostream>
 using namespace std;
- 
-class Node {
 
-private:
-    double value;
-    string name;
-    Node* next;
-
-public:
-    Node(string name, double value)
-    {
-        this->value = value;
-        this->name = name;
-        this->next = NULL;
-    }
-
-    ~Node() { }
-
-    double getValue() {
-        return value;
-    }
-
-    void setValue(double val) {
-        value = val;
-    }
-
-    string getName() {
-        return name;
-    }
-
-    Node* getNext() {
-        return next;
-    }
-
-    void setNext(Node* nextNode) {
-        next = nextNode;
-    }
-};
 class LinkedList {
 
 private:
