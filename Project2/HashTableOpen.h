@@ -3,20 +3,29 @@
 #include <iostream>
 #include <algorithm>
 
-class HashTable {
+class HashTableOpen {
 
 private:
     int memorySize; // N
     int pageSize; // P
     int hashSize; // m
-    Process** table;
+    ProcessOpen** table;
 
 public:
-    HashTable(int memorySize, int pageSize) {
+    HashTableOpen(int memorySize, int pageSize) {
         this->memorySize = memorySize;
         this->pageSize = pageSize;
         this->hashSize = memorySize / pageSize; 
-        this->table = new Process* [hashSize]; // default constructor
+        this->table = new ProcessOpen* [hashSize]{nullptr}; // default constructor
+    }
+
+    ~HashTableOpen() {
+        for (int i = 0; i < hashSize; i++) {
+            if (table[i] != nullptr) {
+                delete table[i];
+            }
+        }
+        delete[] table;
     }
 
     int getHashSize() {
@@ -50,7 +59,7 @@ public:
         for (int i = 0; i < sizeof(Memory->getMemoryFree())/sizeof(int); i++) {
             if (Memory->getMemoryFree()[i] == 0) { // found allocated memory
                 Memory->getMemoryFree()[i] = PID;
-                Process *newProcess = new Process(PID, i);
+                ProcessOpen *newProcess = new ProcessOpen(PID, i);
                 table[currentIndex] = newProcess;
                 return;
             }
