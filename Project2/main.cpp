@@ -1,5 +1,7 @@
-#include "Process.h"
-#include "HashTable.h"
+#include "ProcessOpen.h"
+#include "ProcessOrdered.h"
+#include "HashTableOpen.h"
+#include "HashTableOrdered.h"
 #include "Memory.h"
 #include <iostream>
 using namespace std;
@@ -8,6 +10,7 @@ using namespace std;
 
 int main() {
     HashTable* table;
+    Memory* memory; // probably depends on the type, declare after OPEN/ORDERED
     string cmd;
     int N;
     int P;
@@ -26,7 +29,7 @@ int main() {
         } else if (cmd == "INSERT") {
             int PID;
             cin >> PID;
-            table->insert(PID, doubleHashing);
+            table->insert(PID, memory);
             // SOMEHOW INSERT IT
         } else if (cmd == "SEARCH") {
             int PID;
