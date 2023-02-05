@@ -5,8 +5,6 @@
 #include <iostream>
 using namespace std;
 
-// TODO: fix according to this piazza post: https://piazza.com/class/lbtsz4p4fg54e2/post/ldgiv6yro3m5n0
-
 int main() {
 
     string cmd;

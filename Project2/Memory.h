@@ -1,5 +1,3 @@
-#include <vector>
-
 class Memory {
 
 private:
@@ -8,7 +6,7 @@ private:
 
 public:
     Memory(int memorySize, int pageSize) {
-        this->memoryNotFree = new bool [memorySize / pageSize]{}; // true means memory is free
+        this->memoryNotFree = new bool [memorySize / pageSize]{false}; // false means memory is free
         this->memoryValues = new int [memorySize];
     }
 

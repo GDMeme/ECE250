@@ -1,8 +1,6 @@
 #include "ProcessOpen.h"
 #include "Memory.h"
-#include <vector>
 #include <iostream>
-#include <algorithm>
 
 class HashTableOpen {
 
@@ -17,7 +15,7 @@ public:
         this->memorySize = memorySize;
         this->pageSize = pageSize;
         this->hashSize = memorySize / pageSize; 
-        this->table = new ProcessOpen* [hashSize]{nullptr}; // default constructor
+        this->table = new ProcessOpen* [hashSize]{nullptr};
     }
 
     ~HashTableOpen() {
@@ -119,7 +117,7 @@ public:
         Memory->setMemoryNotFree(table[index]->getStartPageAddress() / pageSize, false); // memory is free now
         ProcessOpen *toDelete = table[index];
         table[index] = nullptr;
-        delete toDelete; // I think this works?
+        delete toDelete;
         return;
     }
 };
