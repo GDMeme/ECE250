@@ -24,11 +24,11 @@ int main() {
                 memory = new Memory(N, P);
                 cout << "success" << endl;
             } else if (cmd == "INSERT") {
-                int PID;
+                unsigned int PID;
                 cin >> PID;
                 table->insert(PID, memory);
             } else if (cmd == "SEARCH") {
-                int PID;
+                unsigned int PID;
                 cin >> PID;
                 int index = table->search(PID);
                 if (index != -1) {
@@ -37,7 +37,7 @@ int main() {
                     cout << "not found" << endl;
                 }
             } else if (cmd == "WRITE") {
-                int PID;
+                unsigned int PID;
                 cin >> PID;
                 int ADDR;
                 cin >> ADDR;
@@ -45,13 +45,13 @@ int main() {
                 cin >> x;
                 table->write(PID, ADDR, x, memory);
             } else if (cmd == "READ") {
-                int PID; 
+                unsigned int PID; 
                 cin >> PID;
                 int ADDR;
                 cin >> ADDR;
                 table->read(PID, ADDR, memory);
             } else if (cmd == "DELETE") {
-                int PID;
+                unsigned int PID;
                 cin >> PID;
                 table->deletePID(PID, memory);
             } else if (cmd == "END") {
@@ -67,18 +67,18 @@ int main() {
                 cin >> P;
                 table = new HashTableOpen(N, P);
             } else if (cmd == "INSERT") {
-                int PID;
+                unsigned int PID;
                 cin >> PID;
                 table->insert(PID, memory);
                 // SOMEHOW INSERT IT
             } else if (cmd == "SEARCH") {
-                int PID;
+                unsigned int PID;
                 cin >> PID;
 
                 // SEARCH FOR THE KEY PID IN THE TABLE
 
             } else if (cmd == "WRITE") {
-                int PID;
+                unsigned int PID;
                 cin >> PID;
                 int ADDR;
                 cin >> ADDR;
@@ -87,19 +87,19 @@ int main() {
 
                 // WRITE THE INTEGER (x) TO THE MEMORY ADDRESS
             } else if (cmd == "READ") {
-                int PID; 
+                unsigned int PID; 
                 cin >> PID;
                 int ADDR;
                 cin >> ADDR;
 
                 // READ THE INTEGER STORED IN THE MEMORY ADDRESS
             } else if (cmd == "DELETE") {
-                int PID;
+                unsigned int PID;
                 cin >> PID;
 
                 // DELETE THE KEY PID FROM THE HASH TABLE
             } else if (cmd == "PRINT") {
-                int m;
+                unsigned int m;
                 cin >> m;
 
                 // PRINT THE CHAIN OF STORED KEYS IN POSITION M OF THE HASH TABLE
@@ -110,5 +110,6 @@ int main() {
         }
         delete table;
     }
+    delete memory;
     return 0;
 }

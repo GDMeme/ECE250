@@ -29,10 +29,10 @@ public:
         delete[] table;
     }
 
-    void insert(int PID, Memory *Memory) {
+    void insert(unsigned int PID, Memory *Memory) {
         // check if the PID exists in the hash table
         int h1 = PID % hashSize;
-        int h2 = (PID / 10) % hashSize;
+        int h2 = (PID / hashSize) % hashSize;
         if (h2 % 2 == 0) {
             h2++;
         }
@@ -49,9 +49,9 @@ public:
         }
         // check if memory has room
         for (int i = 0; i < hashSize; i++) {
-            if (Memory->getMemoryFree(i) == true) { // found unallocated memory
+            if (Memory->getMemoryNotFree(i) == false) { // found unallocated memory
                 std::cout << "success" << std::endl;
-                Memory->setMemoryFree(i, false); // no longer free
+                Memory->setMemoryNotFree(i, true); // no longer free
                 ProcessOpen *newProcess = new ProcessOpen(PID, i * pageSize);
                 table[currentIndex] = newProcess;
                 return;
@@ -61,26 +61,23 @@ public:
         return;
     }
 
-    int search(int PID) {
+    int search(unsigned int PID) {
         int h1 = PID % hashSize;
-        int h2 = (PID / 10) % hashSize;
+        int h2 = (PID / hashSize) % hashSize;
         if (h2 % 2 == 0) {
             h2++;
         }
         int currentIndex;
         for (int i = 0; i < hashSize; i++) { // 0 to m-1
             currentIndex = (h1 + (i * h2)) % hashSize;
-            if (table[currentIndex] == nullptr) { // end of double hash, PID was not found
-                return -1; // output is in main
-            }
-            if (table[currentIndex]->getPID() == PID) { // found the PID
+            if (table[currentIndex] && table[currentIndex]->getPID() == PID) { // found the PID
                 return currentIndex;
             }
         }
         return -1; // reached loop limit, PID was not found
     }
 
-    void write(int PID, int ADDR, int x, Memory *Memory) {
+    void write(unsigned int PID, int ADDR, int x, Memory *Memory) {
         if (ADDR > pageSize - 1) { // address is outside of virtual address space
             std::cout << "failure" << std::endl;
             return;
@@ -96,7 +93,7 @@ public:
         return;
     }
 
-    void read(int PID, int ADDR, Memory *Memory) {
+    void read(unsigned int PID, int ADDR, Memory *Memory) {
         if (ADDR > pageSize - 1) { // address is outside of virtual address space
             std::cout << "failure" << std::endl;
             return;
@@ -111,16 +108,18 @@ public:
         return;
     }
 
-    void deletePID(int PID, Memory *Memory) {
+    void deletePID(unsigned int PID, Memory *Memory) {
         int index = search(PID);
         if (index == -1) {
             std::cout << "failure" << std::endl;
             return;
         }
         // PID was found
-        Memory->setMemoryFree(table[index]->getStartPageAddress(), true);
+        std::cout << "success" << std::endl;
+        Memory->setMemoryNotFree(table[index]->getStartPageAddress() / pageSize, false); // memory is free now
         ProcessOpen *toDelete = table[index];
         table[index] = nullptr;
         delete toDelete; // I think this works?
+        return;
     }
 };
