@@ -29,21 +29,17 @@ public:
         delete[] table;
     }
 
-    int getHashSize() { // NEED THIS?
-        return hashSize;
-    }
-
     void insert(int PID, Memory *Memory) {
         // check if the PID exists in the hash table
         int h1 = PID % hashSize;
         int h2 = (PID / 10) % hashSize;
+        if (h2 % 2 == 0) {
+            h2++;
+        }
         int currentIndex;
         for (int i = 0; i < hashSize; i++) { // 0 to m-1
             currentIndex = (h1 + (i * h2)) % hashSize;
-            if (currentIndex % 2 == 0) {
-                currentIndex++;
-            }
-            if (table[currentIndex]->getPID() == 0) { // end of double hash found, no duplicate
+            if (table[currentIndex] == nullptr) { // end of double hash found, no duplicate
                 break;
             }
             if (table[currentIndex]->getPID() == PID) { // found duplicate
@@ -52,12 +48,11 @@ public:
             }
         }
         // check if memory has room
-
         for (int i = 0; i < hashSize; i++) {
-            if (Memory->getMemoryFree()[i] == false) { // found allocated memory
+            if (Memory->getMemoryFree(i) == true) { // found unallocated memory
                 std::cout << "success" << std::endl;
-                Memory->setMemoryFree(i, true);
-                ProcessOpen *newProcess = new ProcessOpen(PID, i);
+                Memory->setMemoryFree(i, false); // no longer free
+                ProcessOpen *newProcess = new ProcessOpen(PID, i * pageSize);
                 table[currentIndex] = newProcess;
                 return;
             }
@@ -69,17 +64,20 @@ public:
     int search(int PID) {
         int h1 = PID % hashSize;
         int h2 = (PID / 10) % hashSize;
+        if (h2 % 2 == 0) {
+            h2++;
+        }
         int currentIndex;
         for (int i = 0; i < hashSize; i++) { // 0 to m-1
             currentIndex = (h1 + (i * h2)) % hashSize;
-            if (currentIndex % 2 == 0) {
-                currentIndex++;
+            if (table[currentIndex] == nullptr) { // end of double hash, PID was not found
+                return -1; // output is in main
             }
-            if (table[currentIndex]->getPID() == PID) { // found duplicate
-                return i;
+            if (table[currentIndex]->getPID() == PID) { // found the PID
+                return currentIndex;
             }
         }
-        return -1;
+        return -1; // reached loop limit, PID was not found
     }
 
     void write(int PID, int ADDR, int x, Memory *Memory) {
@@ -92,6 +90,37 @@ public:
             std::cout << "failure" << std::endl;
             return;
         }
-        Memory
+        // PID was found
+        std::cout << "success" << std::endl;
+        Memory->setMemoryValues(table[index]->getStartPageAddress(), ADDR, x);
+        return;
+    }
+
+    void read(int PID, int ADDR, Memory *Memory) {
+        if (ADDR > pageSize - 1) { // address is outside of virtual address space
+            std::cout << "failure" << std::endl;
+            return;
+        }
+        int index = search(PID);
+        if (index == -1) { // PID was not found
+            std::cout << "failure" << std::endl;
+            return;
+        }
+        // PID was found
+        std::cout << ADDR << " " << Memory->getMemoryValues(table[index]->getStartPageAddress(), ADDR) << std::endl;
+        return;
+    }
+
+    void deletePID(int PID, Memory *Memory) {
+        int index = search(PID);
+        if (index == -1) {
+            std::cout << "failure" << std::endl;
+            return;
+        }
+        // PID was found
+        Memory->setMemoryFree(table[index]->getStartPageAddress(), true);
+        ProcessOpen *toDelete = table[index];
+        table[index] = nullptr;
+        delete toDelete; // I think this works?
     }
 };
