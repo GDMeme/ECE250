@@ -3,21 +3,29 @@
 class Memory {
 
 private:
-    int *memoryFree;
+    bool *memoryFree;
     int *memoryValues;
 
 public:
     Memory(int memorySize, int pageSize) {
-        this->memoryFree = new int [memorySize / pageSize]{0};
+        this->memoryFree = new bool [memorySize / pageSize]{0};
         this->memoryValues = new int [memorySize];
     }
 
-    int *getMemoryFree() {
+    bool *getMemoryFree() {
         return memoryFree;
     }
 
     int *getMemoryValues() {
         return memoryValues;
+    }
+
+    void *setMemoryFree(int index, bool value) {
+        memoryFree[index] = value;
+    }
+
+    void *setMemoryValues() {
+        // do something
     }
 
 };

@@ -1,4 +1,5 @@
 #include "ProcessOpen.h"
+#include "Memory.h"
 #include <vector>
 #include <iostream>
 #include <algorithm>
@@ -28,12 +29,8 @@ public:
         delete[] table;
     }
 
-    int getHashSize() {
+    int getHashSize() { // NEED THIS?
         return hashSize;
-    }
-
-    int calculateStartPageAddress(int PID) {
-        return PID % hashSize;
     }
 
     void insert(int PID, Memory *Memory) {
@@ -41,7 +38,7 @@ public:
         int h1 = PID % hashSize;
         int h2 = (PID / 10) % hashSize;
         int currentIndex;
-        for (int i = 0; i < hashSize - 1; i++) {
+        for (int i = 0; i < hashSize; i++) { // 0 to m-1
             currentIndex = (h1 + (i * h2)) % hashSize;
             if (currentIndex % 2 == 0) {
                 currentIndex++;
@@ -56,9 +53,10 @@ public:
         }
         // check if memory has room
 
-        for (int i = 0; i < sizeof(Memory->getMemoryFree())/sizeof(int); i++) {
-            if (Memory->getMemoryFree()[i] == 0) { // found allocated memory
-                Memory->getMemoryFree()[i] = PID;
+        for (int i = 0; i < hashSize; i++) {
+            if (Memory->getMemoryFree()[i] == false) { // found allocated memory
+                std::cout << "success" << std::endl;
+                Memory->setMemoryFree(i, true);
                 ProcessOpen *newProcess = new ProcessOpen(PID, i);
                 table[currentIndex] = newProcess;
                 return;
@@ -66,5 +64,34 @@ public:
         }
         std::cout << "failure" << std::endl; // pages are all allocated
         return;
+    }
+
+    int search(int PID) {
+        int h1 = PID % hashSize;
+        int h2 = (PID / 10) % hashSize;
+        int currentIndex;
+        for (int i = 0; i < hashSize; i++) { // 0 to m-1
+            currentIndex = (h1 + (i * h2)) % hashSize;
+            if (currentIndex % 2 == 0) {
+                currentIndex++;
+            }
+            if (table[currentIndex]->getPID() == PID) { // found duplicate
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    void write(int PID, int ADDR, int x, Memory *Memory) {
+        if (ADDR > pageSize - 1) { // address is outside of virtual address space
+            std::cout << "failure" << std::endl;
+            return;
+        }
+        int index = search(PID);
+        if (index == -1) { // PID was not found
+            std::cout << "failure" << std::endl;
+            return;
+        }
+        Memory
     }
 };

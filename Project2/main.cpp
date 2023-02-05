@@ -30,7 +30,12 @@ int main() {
             } else if (cmd == "SEARCH") {
                 int PID;
                 cin >> PID;
-
+                int index = table->search(PID);
+                if (index != -1) {
+                    std::cout << "found " << PID << " in " << index << std::endl;
+                } else {
+                    std::cout << "not found" << std::endl;
+                }
                 // SEARCH FOR THE KEY PID IN THE TABLE
 
             } else if (cmd == "WRITE") {
