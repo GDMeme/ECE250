@@ -1,18 +1,18 @@
 #pragma once
 
-class ProcessOpen {
+class Process {
 
 private:
     unsigned int PID;
     int startPageAddress;
 
 public:
-    ProcessOpen(unsigned int PID, int startPageAddress) {
+    Process(unsigned int PID, int startPageAddress) {
         this->PID = PID;
         this->startPageAddress = startPageAddress;
     }
 
-    ~ProcessOpen() { }
+    ~Process() { }
 
     int getStartPageAddress() {
         return startPageAddress;

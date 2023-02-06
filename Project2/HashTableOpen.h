@@ -1,4 +1,6 @@
-#include "ProcessOpen.h"
+#pragma once
+
+#include "Process.h"
 #include "Memory.h"
 #include <iostream>
 
@@ -8,14 +10,14 @@ private:
     int memorySize; // N
     int pageSize; // P
     int hashSize; // m
-    ProcessOpen** table;
+    Process** table;
 
 public:
     HashTableOpen(int memorySize, int pageSize) {
         this->memorySize = memorySize;
         this->pageSize = pageSize;
         this->hashSize = memorySize / pageSize; 
-        this->table = new ProcessOpen* [hashSize]{nullptr};
+        this->table = new Process* [hashSize]{nullptr};
     }
 
     ~HashTableOpen() {
@@ -37,7 +39,7 @@ public:
         int currentIndex;
         for (int i = 0; i < hashSize; i++) { // 0 to m-1
             currentIndex = (h1 + (i * h2)) % hashSize;
-            if (table[currentIndex] == nullptr) { // end of double hash found, no duplicate
+            if (table[currentIndex] == nullptr) { // found the first spot to insert PID
                 break;
             }
             if (table[currentIndex]->getPID() == PID) { // found duplicate
@@ -50,7 +52,7 @@ public:
             if (Memory->getMemoryNotFree(i) == false) { // found unallocated memory
                 std::cout << "success" << std::endl;
                 Memory->setMemoryNotFree(i, true); // no longer free
-                ProcessOpen *newProcess = new ProcessOpen(PID, i * pageSize);
+                Process *newProcess = new Process(PID, i * pageSize);
                 table[currentIndex] = newProcess;
                 return;
             }
@@ -115,7 +117,7 @@ public:
         // PID was found
         std::cout << "success" << std::endl;
         Memory->setMemoryNotFree(table[index]->getStartPageAddress() / pageSize, false); // memory is free now
-        ProcessOpen *toDelete = table[index];
+        Process *toDelete = table[index];
         table[index] = nullptr;
         delete toDelete;
         return;
