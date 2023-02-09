@@ -37,10 +37,15 @@ public:
             h2++;
         }
         int currentIndex;
+        int indexToInsert = -1;
         for (int i = 0; i < hashSize; i++) { // 0 to m-1
             currentIndex = (h1 + (i * h2)) % hashSize;
             if (table[currentIndex] == nullptr) { // found the first spot to insert PID
                 break;
+            }
+            if (table[currentIndex]->getPID() == 0 && indexToInsert == -1) {
+                indexToInsert = currentIndex;
+                continue;
             }
             if (table[currentIndex]->getPID() == PID) { // found duplicate
                 std::cout << "failure" << std::endl;
@@ -52,6 +57,12 @@ public:
             if (Memory->getMemoryNotFree(i) == false) { // found unallocated memory
                 std::cout << "success" << std::endl;
                 Memory->setMemoryNotFree(i, true); // no longer free
+                if (indexToInsert != -1) {
+                    currentIndex = indexToInsert;
+                }
+                if (table[currentIndex] != nullptr) { // found deleted process
+                    delete table[currentIndex];
+                }
                 Process *newProcess = new Process(PID, i * pageSize);
                 table[currentIndex] = newProcess;
                 return;
@@ -70,11 +81,13 @@ public:
         int currentIndex;
         for (int i = 0; i < hashSize; i++) { // 0 to m-1
             currentIndex = (h1 + (i * h2)) % hashSize;
-            if (table[currentIndex] && table[currentIndex]->getPID() == PID) { // found the PID
+            if (table[currentIndex] != nullptr && table[currentIndex]->getPID() == PID) { // found the PID
                 return currentIndex;
+            } else {
+                break;
             }
         }
-        return -1; // reached loop limit, PID was not found
+        return -1; // reached loop limit or found empty (not deleted) spot, PID was not found
     }
 
     void write(unsigned int PID, int ADDR, int x, Memory *Memory) {
@@ -118,8 +131,9 @@ public:
         std::cout << "success" << std::endl;
         Memory->setMemoryNotFree(table[index]->getStartPageAddress() / pageSize, false); // memory is free now
         Process *toDelete = table[index];
-        table[index] = nullptr;
         delete toDelete;
+        Process *newProcess = new Process(0, 0); // flag for deleted PID
+        table[index] = newProcess;
         return;
     }
 };
