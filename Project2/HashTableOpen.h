@@ -81,10 +81,11 @@ public:
         int currentIndex;
         for (int i = 0; i < hashSize; i++) { // 0 to m-1
             currentIndex = (h1 + (i * h2)) % hashSize;
-            if (table[currentIndex] != nullptr && table[currentIndex]->getPID() == PID) { // found the PID
-                return currentIndex;
-            } else {
+            if (table[currentIndex] == nullptr) {
                 break;
+            }
+            if (table[currentIndex]->getPID() == PID) { // found the PID
+                return currentIndex;
             }
         }
         return -1; // reached loop limit or found empty (not deleted) spot, PID was not found

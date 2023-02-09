@@ -24,9 +24,7 @@ public:
     ~HashTableOrdered() {
         for (int i = 0; i < hashSize; i++) {
             for (int j = 0; j < table[i].size(); j++) {
-                if (table[i][j] != 0) {
-                    delete table[i][j]; // make sure when deleting from hash table, set to 0.
-                }
+                delete table[i][j];
             }
         }
         delete[] table;
