@@ -131,8 +131,7 @@ public:
         // PID was found
         std::cout << "success" << std::endl;
         Memory->setMemoryNotFree(table[index]->getStartPageAddress() / pageSize, false); // memory is free now
-        Process *toDelete = table[index];
-        delete toDelete;
+        delete table[index];
         Process *newProcess = new Process(0, 0); // flag for deleted PID
         table[index] = newProcess;
         return;

@@ -117,9 +117,8 @@ public:
         // PID was found
         std::cout << "success" << std::endl;
         Memory->setMemoryNotFree(table[PID % hashSize][index]->getStartPageAddress() / pageSize, false); // memory is free now
-        Process *toDelete = table[PID % hashSize][index];
+        delete table[PID % hashSize][index];
         table[PID % hashSize].erase(table[PID % hashSize].begin() + index);
-        delete toDelete;
         return;
     }
 
