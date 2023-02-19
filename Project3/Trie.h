@@ -108,14 +108,13 @@ class Trie {
             if (currentNode->getTerminal() == true) {
                 std::cout << "success" << std::endl;
                 currentNode->setTerminal(false);
-                return;
             } else { // word was not actually found
                 std::cout << "failure" << std::endl; // it was just part of a longer word
-                return;
             }
             // check if I can delete nodes
+            bool deleteNode;
             for (int i = path.size() - 1; i > 0; i--) { // DON'T DELETE THE ROOT
-                bool deleteNode = true;
+                deleteNode = true;
                 for (int j = 0; j <= 25; j++) {
                     if (path[i]->getLetterArray(j) != nullptr) {
                         deleteNode = false;
