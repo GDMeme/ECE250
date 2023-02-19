@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 using namespace std;
 
@@ -20,69 +21,51 @@ int main() {
             cout << "success" << endl;
         } else if (cmd == "i") {
             cin >> addWord;
-            bool illegal{false};
-            Node *currentNode = myTrie->getRoot();
             try {
                 for (int i = 0; i < addWord.size(); i++) {
                     if (!isalpha(addWord[i]) || !isupper(addWord[i])) {
                         throw illegal_exception();
                     }
-                    if (currentNode->getLetterArray(addWord[i] - 'a') == nullptr) { // new node
-                        Node *newNode = new Node();
-                        currentNode->setLetterArray(addWord[i] - 'a', newNode);
-                        currentNode = newNode;
-                        if (i == addWord.size() - 1) {
-                            currentNode->setTerminal(true);
-                        }
-                    } else {
-                        currentNode = currentNode->getLetterArray(addWord[i] - 'a');
-                        if (i == addWord.size() - 1) {
-                            currentNode->setTerminal(true);
-                        }
-                    }
+                }
+                // if got here, the word is valid
+                // but still have to check if the word is already there
+                if (myTrie->insertWord(addWord)) {
+                    cout << "success" << endl;
+                } else {
+                    cout << "failure" << endl;
                 }
             }
             catch (illegal_exception e) {
                 e.print();
-                illegal = true;
-            }
-            if (!illegal) {
-                myTrie->insertWord(addWord);
             }
         } else if (cmd == "c") {
             string prefix;
             cin >> prefix;
-            bool illegal{false};
             try {
                 for (int i = 0; i < prefix.size(); i++) {
                     if (!isalpha(prefix[i]) || !isupper(prefix[i])) {
                         throw illegal_exception();
                     }
                 }
+                // if got here, the word is valid
+                myTrie->count(prefix);
             }
             catch (illegal_exception e) {
                 e.print();
-                illegal = true;
-            }
-            if (!illegal) {
-                cout << myTrie->count(prefix) << endl;
             }
         } else if (cmd == "e") {
             string removeWord;
-            bool illegal{false};
             try {
                 for (int i = 0; i < removeWord.size(); i++) {
                     if (!isalpha(removeWord[i]) || !isupper(removeWord[i])) {
                         throw illegal_exception();
                     }
                 }
+                // if got here, the word is valid
+                myTrie->erase(removeWord);
             }
             catch (illegal_exception e) {
                 e.print();
-                illegal = true;
-            }
-            if (!illegal) {
-                myTrie->erase(removeWord);
             }
         } else if (cmd == "p") {
             myTrie->print();

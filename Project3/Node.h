@@ -10,6 +10,10 @@ class Node {
             this->terminal = false;
         }
 
+        bool getTerminal() {
+            return terminal;
+        }
+
         void setTerminal(bool value) {
             terminal = value;
             return;
