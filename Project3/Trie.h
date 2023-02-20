@@ -31,6 +31,10 @@ class Trie {
 
         ~Trie(){ }
 
+        Node *getRoot() {
+            return root;
+        }
+
         int getSize() {
             return size;
         }
@@ -124,8 +128,16 @@ class Trie {
             return;
         }
 
-        void print() {
-
+        void print(Node *currentNode, string currentString) {
+            for (int i = 0; i < 26; i++) {
+                if (currentNode->getTerminal()) {
+                    std::cout << currentString << " " << std::endl;
+                }
+                Node *nextNode = currentNode->getLetterArray(i);
+                if (nextNode != nullptr) {
+                    print(nextNode, currentString + char(i + 'A'));
+                }
+            }
             return;
         }
 

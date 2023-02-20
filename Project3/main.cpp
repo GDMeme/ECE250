@@ -68,7 +68,8 @@ int main() {
                 e.print();
             }
         } else if (cmd == "p") {
-            myTrie->print();
+            myTrie->print(myTrie->getRoot(), "");
+            cout << endl;
         } else if (cmd == "spellcheck") {
             string word;
             cin >> word;
