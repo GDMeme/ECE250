@@ -45,6 +45,7 @@
         "xutility": "cpp",
         "string": "cpp",
         "array": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "vector": "cpp"
     }
 }

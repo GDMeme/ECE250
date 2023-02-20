@@ -1,4 +1,5 @@
 #include "Trie.h"
+#include "Node.h"
 #include "illegal_exception.h"
 
 #include <iostream>
@@ -9,15 +10,17 @@ using namespace std;
 
 int main() {
     Trie* myTrie = new Trie();
-    ifstream fin("corpus.txt");
+    ifstream fin;
 
     string cmd;
     string addWord;
     while(cin >> cmd) {
         if (cmd == "load") {
+            fin.open("corpus.txt");
             while (fin >> addWord) {
                 myTrie->insertWord(addWord);
             }
+            fin.close();
             cout << "success" << endl;
         } else if (cmd == "i") {
             cin >> addWord;
@@ -55,6 +58,7 @@ int main() {
             }
         } else if (cmd == "e") {
             string removeWord;
+            cin >> removeWord;
             try {
                 for (int i = 0; i < removeWord.size(); i++) {
                     if (!isalpha(removeWord[i]) || !isupper(removeWord[i])) {
@@ -80,6 +84,7 @@ int main() {
             cout << output << endl;
         } else if (cmd == "clear") {
             myTrie->clear(myTrie->getRoot());
+            myTrie->setSize(0);
             cout << "success" << endl;
         } else if (cmd == "size") {
             cout << "number of words is " << myTrie->getSize() << endl;

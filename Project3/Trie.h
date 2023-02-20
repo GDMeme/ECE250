@@ -2,6 +2,8 @@
 
 #include "Node.h"
 #include <iostream>
+#include <string>
+#include <vector>
 
 class Trie {
     private:
@@ -42,7 +44,11 @@ class Trie {
             return size;
         }
 
-        bool insertWord(string word) {
+        void setSize(int size) {
+            this->size = size;
+        }
+
+        bool insertWord(std::string word) {
             Node *currentNode = root;
             Node *nextNode;
             for (int i = 0; i < word.size(); i++) {
@@ -54,7 +60,7 @@ class Trie {
                     if (i == word.size() - 1) {
                         currentNode->setTerminal(true);
                         size++;
-                        return true;
+                        break; // return true
                     }
                 } else {
                     currentNode = nextNode;
@@ -64,31 +70,31 @@ class Trie {
                         } else {
                             currentNode->setTerminal(true);
                             size++;
-                            return true;
+                            break; // return true
                         }
                     }
                 }
             }
-            std::cout << "How did you get here?" << std::endl;
+            return true;
         }
 
-        void count(string prefix) {
+        void count(std::string prefix) {
             int counter = 0;
             Node *currentNode = root;
             Node *nextNode;
             for (int i = 0; i < prefix.size(); i++) {
                 nextNode = currentNode->getLetterArray(prefix[i] - 'A');
                 if (nextNode == nullptr) {
-                    cout << "not found" << endl;
+                    std::cout << "not found" << std::endl;
                     return;
                 }
                 currentNode = nextNode;
             }
-            cout << "count is " << findCombinations(currentNode) << endl;
+            std::cout << "count is " << findCombinations(currentNode) << std::endl;
             return;
         }
 
-        void erase(string word) {
+        void erase(std::string word) {
             Node *currentNode = root;
             Node *nextNode;
             std::vector<Node*> path;
@@ -131,12 +137,12 @@ class Trie {
             return;
         }
 
-        void print(Node *currentNode, string currentString) {
+        void print(Node *currentNode, std::string currentString) {
             Node *nextNode;
+            if (currentNode->getTerminal()) {
+                std::cout << currentString << " ";
+            }
             for (int i = 0; i < 26; i++) {
-                if (currentNode->getTerminal()) {
-                    std::cout << currentString << " " << std::endl;
-                }
                 nextNode = currentNode->getLetterArray(i);
                 if (nextNode != nullptr) {
                     print(nextNode, currentString + char(i + 'A'));
@@ -145,13 +151,26 @@ class Trie {
             return;
         }
 
-        void spellCheck(string word) {
+        void spellCheck(std::string word) {
             Node *currentNode = root;
             Node *nextNode;
+            std::string currentWord;
             for (int i = 0; i < word.size(); i++) {
                 nextNode = currentNode->getLetterArray(word[i] - 'A');
+                if (i == word.size() - 1 && nextNode != nullptr && nextNode->getTerminal()) {
+                    std::cout << "correct";
+                    return;
+                }
                 if (nextNode == nullptr) {
-                    print(currentNode, "");
+                    if (i == 0) { // the first letter doesn't match
+                        return; // just output a new line
+                    }
+                    print(currentNode, currentWord);
+                    return;
+                }
+                currentWord += word[i];
+                if (i == word.size() - 1) { // last character that matches has been found
+                    print(nextNode, currentWord);
                     return;
                 }
                 currentNode = nextNode;
@@ -165,10 +184,10 @@ class Trie {
                 nextNode = currentNode->getLetterArray(i);
                 if (nextNode != nullptr) {
                     clear(nextNode);
+                    currentNode->setLetterArray(i, nullptr);
                     delete nextNode;
                 }
             }
-            // DON'T DELETE THE ROOT
             return;
         }
 };

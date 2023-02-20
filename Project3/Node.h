@@ -10,6 +10,10 @@ class Node {
             this->terminal = false;
         }
 
+        ~Node() {
+            delete[] letterArray;
+        }
+
         bool getTerminal() {
             return terminal;
         }
