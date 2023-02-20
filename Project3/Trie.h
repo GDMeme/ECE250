@@ -53,13 +53,11 @@ class Trie {
             Node *nextNode;
             for (int i = 0; i < word.size(); i++) {
                 nextNode = currentNode->getLetterArray(word[i] - 'A');
-                if (nextNode == nullptr) { // new node
+                if (nextNode == nullptr) { // make a new node
                     Node *newNode = new Node();
                     currentNode->setLetterArray(word[i] - 'A', newNode);
                     currentNode = newNode;
                     if (i == word.size() - 1) {
-                        currentNode->setTerminal(true);
-                        size++;
                         break; // return true
                     }
                 } else {
@@ -68,13 +66,13 @@ class Trie {
                         if (currentNode->getTerminal()) { // duplicate found
                             return false; 
                         } else {
-                            currentNode->setTerminal(true);
-                            size++;
                             break; // return true
                         }
                     }
                 }
             }
+            currentNode->setTerminal(true);
+            size++;
             return true;
         }
 
