@@ -11,10 +11,10 @@ class Trie {
         int findCombinations (Node *currentNode) {
             int counter = 0;
             Node *nextNode;
-            if (currentNode->getTerminal() == true) {
+            if (currentNode->getTerminal()) {
                 counter++;
             }
-            for (int i = 0; i <= 25; i++) {
+            for (int i = 0; i < 26; i++) {
                 nextNode = currentNode->getLetterArray(i);
                 if (nextNode != nullptr) {
                     counter += findCombinations(nextNode);
@@ -52,10 +52,9 @@ class Trie {
                 } else {
                     currentNode = nextNode;
                     if (i == word.size() - 1) { // possible duplicate found
-                        if (currentNode->getTerminal() == true) { // duplicate found
+                        if (currentNode->getTerminal()) { // duplicate found
                             return false; 
                         } else {
-                            std::cout << "success" << endl;
                             currentNode->setTerminal(true);
                             size++;
                             return true;
@@ -73,20 +72,12 @@ class Trie {
             for (int i = 0; i < prefix.size(); i++) {
                 nextNode = currentNode->getLetterArray(prefix[i] - 'A');
                 if (nextNode == nullptr) {
-                    counter = findCombinations(currentNode);
-                    break;
-                } else {
-                    currentNode = nextNode;
-                    if (i == prefix.size() - 1) { // the entire prefix exists in the trie
-                        counter = findCombinations(currentNode);
-                    }
+                    cout << "not found" << endl;
+                    return;
                 }
+                currentNode = nextNode;
             }
-            if (counter == 0) {
-                cout << "not found" << endl;
-            } else {
-                cout << "count is " << counter << endl;
-            }
+            cout << "count is " << findCombinations(currentNode) << endl;
             return;
         }
 
@@ -105,30 +96,31 @@ class Trie {
                 path.push_back(currentNode);
             }
             // if got here, entire word was found
-            if (currentNode->getTerminal() == true) {
+            if (currentNode->getTerminal()) {
                 std::cout << "success" << std::endl;
                 currentNode->setTerminal(false);
+                size--;
             } else { // word was not actually found
                 std::cout << "failure" << std::endl; // it was just part of a longer word
+                return;
             }
             // check if I can delete nodes
             bool deleteNode;
             for (int i = path.size() - 1; i > 0; i--) { // DON'T DELETE THE ROOT
                 deleteNode = true;
-                for (int j = 0; j <= 25; j++) {
+                for (int j = 0; j < 26; j++) {
                     if (path[i]->getLetterArray(j) != nullptr) {
                         deleteNode = false;
                         break;
                     }
                 }
-                if (deleteNode && path[i]->getTerminal() == false) {
+                if (deleteNode && !path[i]->getTerminal()) {
                     delete path[i];
                     path[i - 1]->setLetterArray(word[i - 1] - 'A', nullptr);
                 } else {
                     break;
                 }
             }
-            std::cout << "success" << std::endl;
             return;
         }
 
