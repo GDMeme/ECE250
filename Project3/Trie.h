@@ -29,7 +29,10 @@ class Trie {
             this->size = 0;
         }
 
-        ~Trie(){ }
+        ~Trie(){
+            clear(root);
+            delete root;
+        }
 
         Node *getRoot() {
             return root;
@@ -129,11 +132,12 @@ class Trie {
         }
 
         void print(Node *currentNode, string currentString) {
+            Node *nextNode;
             for (int i = 0; i < 26; i++) {
                 if (currentNode->getTerminal()) {
                     std::cout << currentString << " " << std::endl;
                 }
-                Node *nextNode = currentNode->getLetterArray(i);
+                nextNode = currentNode->getLetterArray(i);
                 if (nextNode != nullptr) {
                     print(nextNode, currentString + char(i + 'A'));
                 }
@@ -141,18 +145,30 @@ class Trie {
             return;
         }
 
-        void spellCheck(string word)  {
-
+        void spellCheck(string word) {
+            Node *currentNode = root;
+            Node *nextNode;
+            for (int i = 0; i < word.size(); i++) {
+                nextNode = currentNode->getLetterArray(word[i] - 'A');
+                if (nextNode == nullptr) {
+                    print(currentNode, "");
+                    return;
+                }
+                currentNode = nextNode;
+            }
             return;
         }
 
-        void checkEmpty() {
-
-            return;
-        }
-
-        void clear() {
-
+        void clear(Node *currentNode) {
+            Node *nextNode;
+            for (int i = 0; i < 26; i++) {
+                nextNode = currentNode->getLetterArray(i);
+                if (nextNode != nullptr) {
+                    clear(nextNode);
+                    delete nextNode;
+                }
+            }
+            // DON'T DELETE THE ROOT
             return;
         }
 };

@@ -74,12 +74,15 @@ int main() {
             string word;
             cin >> word;
             myTrie->spellCheck(word);
+            cout << endl;
         } else if (cmd == "empty") {
-            myTrie->checkEmpty();
+            string output = myTrie->getSize() == 0 ? "empty 1" : "empty 0";
+            cout << output << endl;
         } else if (cmd == "clear") {
-            myTrie->clear();
+            myTrie->clear(myTrie->getRoot());
+            cout << "success" << endl;
         } else if (cmd == "size") {
-            cout << myTrie->getSize() << endl;
+            cout << "number of words is " << myTrie->getSize() << endl;
         } else if (cmd == "exit") {
             break;
         }
