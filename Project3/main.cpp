@@ -72,8 +72,10 @@ int main() {
                 e.print();
             }
         } else if (cmd == "p") {
-            myTrie->print(myTrie->getRoot(), "");
-            cout << endl;
+            if (myTrie->getSize() != 0) {
+                myTrie->print(myTrie->getRoot(), "");
+                cout << endl;
+            }
         } else if (cmd == "spellcheck") {
             string word;
             cin >> word;
