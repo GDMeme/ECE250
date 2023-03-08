@@ -126,7 +126,7 @@ class Trie {
                 }
                 if (deleteNode && !path[i]->getTerminal()) {
                     delete path[i];
-                    path[i - 1]->setLetterArray(word[i - 1] - 'A', nullptr);
+                    path[i - 1]->setLetterArray(word[i - 1] - 'A', nullptr); // set the parent's respective letterArray index (child) to nullptr
                 } else {
                     break;
                 }
