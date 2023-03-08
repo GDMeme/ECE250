@@ -159,7 +159,7 @@ class Trie {
                     std::cout << "correct";
                     return;
                 }
-                if (nextNode == nullptr) {
+                if (nextNode == nullptr) { // last character that matches has been found
                     if (i == 0) { // the first letter doesn't match
                         return; // just output a new line
                     }
@@ -167,7 +167,7 @@ class Trie {
                     return;
                 }
                 currentWord += word[i];
-                if (i == word.size() - 1) { // last character that matches has been found
+                if (i == word.size() - 1) {
                     print(nextNode, currentWord);
                     return;
                 }
