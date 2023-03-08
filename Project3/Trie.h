@@ -106,15 +106,14 @@ class Trie {
                 currentNode = nextNode;
                 path.push_back(currentNode);
             }
-            // if got here, entire word was found
-            if (currentNode->getTerminal()) {
-                std::cout << "success" << std::endl;
-                currentNode->setTerminal(false);
-                size--;
-            } else { // word was not actually found
+            if (!currentNode->getTerminal()) { // word was not actually found
                 std::cout << "failure" << std::endl; // it was just part of a longer word
                 return;
             }
+            // if got here, entire word was found
+            std::cout << "success" << std::endl;
+            currentNode->setTerminal(false);
+            size--;
             // check if I can delete nodes
             bool deleteNode;
             for (int i = path.size() - 1; i > 0; i--) { // DON'T DELETE THE ROOT
