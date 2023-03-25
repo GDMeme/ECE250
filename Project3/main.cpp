@@ -11,7 +11,6 @@ using namespace std;
 int main() {
     Trie* myTrie = new Trie();
     ifstream fin;
-
     string cmd;
     string addWord;
     while(cin >> cmd) {
