@@ -106,15 +106,14 @@ class Trie {
                 currentNode = nextNode;
                 path.push_back(currentNode);
             }
-            // if got here, entire word was found
-            if (currentNode->getTerminal()) {
-                std::cout << "success" << std::endl;
-                currentNode->setTerminal(false);
-                size--;
-            } else { // word was not actually found
+            if (!currentNode->getTerminal()) { // word was not actually found
                 std::cout << "failure" << std::endl; // it was just part of a longer word
                 return;
             }
+            // if got here, entire word was found
+            std::cout << "success" << std::endl;
+            currentNode->setTerminal(false);
+            size--;
             // check if I can delete nodes
             bool deleteNode;
             for (int i = path.size() - 1; i > 0; i--) { // DON'T DELETE THE ROOT
@@ -127,7 +126,7 @@ class Trie {
                 }
                 if (deleteNode && !path[i]->getTerminal()) {
                     delete path[i];
-                    path[i - 1]->setLetterArray(word[i - 1] - 'A', nullptr);
+                    path[i - 1]->setLetterArray(word[i - 1] - 'A', nullptr); // set the parent's respective letterArray index (child) to nullptr
                 } else {
                     break;
                 }
@@ -159,7 +158,7 @@ class Trie {
                     std::cout << "correct";
                     return;
                 }
-                if (nextNode == nullptr) {
+                if (nextNode == nullptr) { // last character that matches has been found
                     if (i == 0) { // the first letter doesn't match
                         return; // just output a new line
                     }
@@ -167,7 +166,7 @@ class Trie {
                     return;
                 }
                 currentWord += word[i];
-                if (i == word.size() - 1) { // last character that matches has been found
+                if (i == word.size() - 1) {
                     print(nextNode, currentWord);
                     return;
                 }
