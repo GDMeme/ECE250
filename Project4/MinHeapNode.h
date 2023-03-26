@@ -2,15 +2,15 @@
 
 class MinHeapNode {
     private:
-        int v;
-        int key;
-        int vertexNumber;
+        int vertexNumber; // 0, 1, 2, ... # of vertices (arbitrary number to keep track of vertices)
+        int key; // weight to get to this node
+        int stationNumber; // the actual station number
 
     public:
-        MinHeapNode(int v, int key, int vertexNumber) {
-            this->v = v; // 0, 1, 2, ... # of vertices (arbitrary number to keep track of vertices)
-            this->key = key; // weight to get to this
-            this->vertexNumber = vertexNumber; // the actual station number
+        MinHeapNode(int vertexNumber, int key, int stationNumber) {
+            this->vertexNumber = vertexNumber; 
+            this->key = key;
+            this->stationNumber = stationNumber;
         }
 
         ~MinHeapNode() {}
@@ -19,8 +19,8 @@ class MinHeapNode {
             return key;
         }
 
-        int getV() {
-            return v;
+        int getVertexNumber() {
+            return vertexNumber;
         }
 
         void setKey(int key) {
@@ -28,7 +28,7 @@ class MinHeapNode {
             return;
         }
 
-        int getVertexNumber() {
-            return vertexNumber;
+        int getStationNumber() {
+            return stationNumber;
         }
 };

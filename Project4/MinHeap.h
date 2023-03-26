@@ -65,90 +65,85 @@ class MinHeap {
             return size;
         }
 
-        void minHeapify(MinHeap* minHeap, int idx) {
-            int smallest, left, right;
-            smallest = idx;
-            left = 2 * idx + 1;
-            right = 2 * idx + 2;
+        void minHeapify(int index) {
+            int smallest, leftChild, rightChild;
+            smallest = index;
+            leftChild = 2 * index + 1;
+            rightChild = 2 * index + 2;
         
-            if (left < minHeap->size && minHeap->array[left]->getKey() < minHeap->array[smallest]->getKey()) {
-                // std::cout << "i got here" << std::endl;
-                // std::cout << "left is " << left << std::endl;
-                // std::cout << minHeap->size << std::endl << minHeap->array[left]->getKey() << std::endl << minHeap->array[smallest]->getKey() << std::endl;
-                smallest = left;
+            if (leftChild < size && // left child exists in the heap
+                    array[leftChild]->getKey() < array[smallest]->getKey()) { // new smallest found
+                smallest = leftChild;
             }
         
-            if (right < minHeap->size && minHeap->array[right]->getKey() < minHeap->array[smallest]->getKey()) {
-                // std::cout << "smallest=right" << std::endl;
-                smallest = right;
+            if (rightChild < size && // right child exists in the heap
+                    array[rightChild]->getKey() < array[smallest]->getKey()) { // new smallest found
+                smallest = rightChild;
             }
         
-            if (smallest != idx) { // need to swap
-                // std::cout << "nee dto swap" << std::endl;
-                // The nodes to be swapped in min heap
-                MinHeapNode* smallestNode = minHeap->array[smallest];
-                MinHeapNode* idxNode = minHeap->array[idx];
+            if (smallest != index) { // need to swap
+                MinHeapNode* smallestNode = array[smallest];
+                MinHeapNode* indexNode = array[index];
         
-                // Swap positions
-                minHeap->pos[smallestNode->getV()] = idx;
-                minHeap->pos[idxNode->getV()] = smallest;
+                // swap positions
+                pos[smallestNode->getVertexNumber()] = index;
+                pos[indexNode->getVertexNumber()] = smallest;
         
-                // Swap nodes
+                // swap nodes in array
                 MinHeapNode* temp = smallestNode;
-                minHeap->array[smallest] = idxNode;
-                minHeap->array[idx] = temp;
-                // std::cout << "array start" << std::endl;
-                // for (int i = 0; i < 4; i++) {
-                //     std::cout << minHeap->array[i]->getKey() << " ";
-                // }
-                // std::cout << std::endl;
-                minHeapify(minHeap, smallest);
+                array[smallest] = indexNode;
+                array[index] = temp;
+
+                minHeapify(smallest);
             }
         }
 
-        MinHeapNode* extractMin(MinHeap* minHeap) {
+        MinHeapNode* extractMin() {
             if (size == 0)
                 return NULL;
         
-            // Store the root node
-            MinHeapNode* root = minHeap->array[0];
+            MinHeapNode* minNode = array[0];
         
-            // Replace root node with last node
-            MinHeapNode* lastNode = minHeap->array[minHeap->size - 1];
-            minHeap->array[0] = lastNode;
+            // swap root and last node
+            MinHeapNode* lastNode = array[size - 1];
+            array[0] = lastNode;
         
-            // Update position of last node
-            minHeap->pos[root->getV()] = minHeap->size - 1;
-            minHeap->pos[lastNode->getV()] = 0;
+            // update position of root and last node
+            pos[minNode->getVertexNumber()] = size - 1;
+            pos[lastNode->getVertexNumber()] = 0;
         
-            // Reduce heap size and heapify root
-            minHeap->size--;
-            minHeapify(minHeap, 0);
+            // reduce heap size (gets rid of extracted minimum node)
+            size--;
+
+            // heapify root
+            minHeapify(0);
         
-            return root;
+            return minNode;
         }
 
-        void decreaseKey(MinHeap* minHeap, int currentDest, int key) {
-            // Get the index of v in heap array
-            int i = minHeap->pos[currentDest];
+        void modifyKey(int currentDest, int key) {
+            // index of current destination
+            int i = pos[currentDest];
         
-            // Get the node and update its key value
-            minHeap->array[i]->setKey(key);
+            // update key
+            array[i]->setKey(key);
         
-            // Travel up while the complete tree is not heapified.
-            // This is a O(Logn) loop
-            while (i && minHeap->array[i]->getKey() < minHeap->array[(i - 1) / 2]->getKey()) {
-                // Swap this node with its parent
-                minHeap->pos[minHeap->array[i]->getV()] = (i - 1) / 2;
-                minHeap->pos[minHeap->array[(i - 1) / 2]->getV()] = i;
+            int parent = (i - 1) / 2;
 
-                MinHeapNode *temp = minHeap->array[i];
-                minHeap->array[i] = minHeap->array[(i - 1) / 2];
-                minHeap->array[(i - 1) / 2] = temp;
-                // swapMinHeapNode(&minHeap->array[i], &minHeap->array[(i - 1) / 2]);
+            // heapify
+            while (i && 
+                    array[i]->getKey() < array[parent]->getKey()) { // need to swap
+                // swap positions
+                pos[array[i]->getVertexNumber()] = (i - 1) / 2;
+                pos[array[parent]->getVertexNumber()] = i;
+
+                // swap nodes in array
+                MinHeapNode *temp = array[i];
+                array[i] = array[parent];
+                array[parent] = temp;
         
-                // move to parent index
                 i = (i - 1) / 2;
+                parent = (i - 1) / 2;
             }
         }
 };

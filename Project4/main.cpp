@@ -6,7 +6,6 @@
 #include "illegal_exception.h"
 #include "Graph.h"
 #include "MinHeap.h"
-#include "MinHeapNode.h"
 
 using namespace std;
 
@@ -18,8 +17,8 @@ bool checkInvalid(int a, int b, int w) {
 }
 
 void primMST(Graph* graph, bool flag) {
-    int V = graph->getV(); // Get the number of vertices in graph
-    if (V == 0) {
+    int numberOfVertices = graph->getNumberOfVertices();
+    if (numberOfVertices == 0) { // empty graph
         if (flag) {
             std::cout << "failure" << std::endl;
         } else {
@@ -27,86 +26,71 @@ void primMST(Graph* graph, bool flag) {
         }
         return;
     }
-    MinHeap *minHeap = new MinHeap(V);
+    MinHeap *minHeap = new MinHeap(numberOfVertices);
 
-    int parent[V]; // Array to store constructed MST
-    int key[V]; // Key values used to pick minimum weight
-                // edge in cut
+    int parent[numberOfVertices]; // stores constructed MST
+    int key[numberOfVertices]; // stores weight to get to corresponding vertice
 
     int arrayToLink [50001];
-    int arrayToLinkBack [V];
+    int arrayToLinkBack [numberOfVertices];
 
-    // Initialize min heap with all vertices. Key value of
-    // all vertices (except 0th vertex) is initially
-    // infinite
-    for (int i = 1; i < V; i++) {
-        parent[i] = -1;
-        key[i] = INT_MAX;
+    // initialize all vertices (except 0th index) 
+    for (int i = 1; i < numberOfVertices; i++) {
+        parent[i] = -1; // no parent yet
+        key[i] = INT_MAX; // so that any edge is better than the default key
         MinHeapNode* newNode = new MinHeapNode(i, key[i], graph->getExistingVertices(i));
         minHeap->setArray(i, newNode);
         minHeap->setArrayToDelete(i, newNode);
         arrayToLink[graph->getExistingVertices(i)] = i;
         arrayToLinkBack[i] = graph->getExistingVertices(i);
-        minHeap->setPos(i, i); // corresponds to V
+        minHeap->setPos(i, i); // maps vertice to position in array
     }
 
-    // Make key value of 0th vertex as 0 so that it
-    // is extracted first
+    // setting 0th index
     key[0] = 0;
     MinHeapNode* newNode = new MinHeapNode(0, key[0], graph->getExistingVertices(0));
     arrayToLink[graph->getExistingVertices(0)] = 0;
     arrayToLinkBack[0] = graph->getExistingVertices(0);
-    // std::cout << "0: " << arrayToLinkBack[0] << std::endl;
-    // std::cout << "1: " << arrayToLinkBack[1] << std::endl;
     minHeap->setArray(0, newNode);
     minHeap->setArrayToDelete(0, newNode);
     minHeap->setPos(0, 0);
 
-    for (int i = V/2; i > 0; i--) {
-        minHeap->minHeapify(minHeap, i);
+    // building heap
+    for (int i = numberOfVertices/2; i > 0; i--) {
+        minHeap->minHeapify(i);
     }
 
-    // In the following loop, min heap contains all nodes
-    // not yet added to MST.
+    // minHeap has all nodes not in MST yet
     while (minHeap->getSize() != 0) {
-        // Extract the vertex with minimum key value
-        MinHeapNode* minHeapNode = minHeap->extractMin(minHeap); // this calls heapify
-        // std::cout << "min is: " << minHeapNode->getVertexNumber() << std::endl;
-        int currentVertexNumber = minHeapNode->getVertexNumber();
-        // Traverse through all adjacent vertices of u (the
-        // extracted vertex) and update their key values
-        for (int i = 0; i < graph->getAdjacencyListSize(currentVertexNumber); i++) {
-            int currentDest = arrayToLink[graph->getAdjacencyListDest(currentVertexNumber, i)]; // 0 to # of vertexes
+        MinHeapNode* minHeapNode = minHeap->extractMin(); // this calls heapify
+        int currentStationNumber = minHeapNode->getStationNumber();
+        // check all adjacent destinations to (possibly) update their key values
+        for (int i = 0; i < graph->getAdjacencyListSize(currentStationNumber); i++) {
+            int currentDest = arrayToLink[graph->getAdjacencyListDest(currentStationNumber, i)]; // 0 to # of vertexes
             // currentDest is only used for the index value for key, parent
 
-            // If v is not yet included in MST and weight of
-            // u-v is less than key value of v, then update
-            // key value and parent of v
             if (minHeap->getPos(currentDest) < minHeap->getSize() // currentDest is not yet in MST
-                    && graph->getAdjacencyListWeight(minHeapNode->getVertexNumber(), i) <= key[currentDest]) { 
+                    && graph->getAdjacencyListWeight(minHeapNode->getStationNumber(), i) <= key[currentDest]) {
                         // weight of edge is less than key value of currentDest
-                key[currentDest] = graph->getAdjacencyListWeight(minHeapNode->getVertexNumber(), i); 
+                        // meaning need to update key
+                key[currentDest] = graph->getAdjacencyListWeight(minHeapNode->getStationNumber(), i); 
                 // set equal to the edge weight value
-                parent[currentDest] = minHeapNode->getV(); // V is how the parents are linked to child
-                minHeap->decreaseKey(minHeap, currentDest, key[currentDest]);
+                parent[currentDest] = minHeapNode->getVertexNumber(); // VertexNumber is how the nodes are linked through parent
+                minHeap->modifyKey(currentDest, key[currentDest]);
             }
         }
     }
-
-    // print edges of MST
-    if (flag) {
-        // std::cout << std::endl;
-        for (int i = 1; i < V; i++) {
-            // std::cout << "parent[i] is: " << parent[i] << std::endl;
-            std::cout << arrayToLinkBack[parent[i]] << " " << arrayToLinkBack[i] << " " << key[i] << " ";
+    if (flag) { // print edges of MST
+        for (int i = 1; i < numberOfVertices; i++) {
+            cout << arrayToLinkBack[parent[i]] << " " << arrayToLinkBack[i] << " " << key[i] << " ";
         }
-        std::cout << std::endl;
-    } else {
+        cout << endl;
+    } else { // calculate cost
         int sum = 0;
-        for (int i = 1; i < V; i++) {
+        for (int i = 1; i < numberOfVertices; i++) {
             sum += key[i];
         }
-        std::cout << "cost is " << sum << std::endl;
+        cout << "cost is " << sum << endl;
     }
     delete minHeap;
     return;
@@ -127,7 +111,6 @@ int main() {
                 fin >> w;
                 myGraph->addEdge(a, b, w, false);
             }
-            // cout << "number of vertices is " << myGraph->getV() << std::endl;
             cout << "success" << endl;
         } else if (cmd == "INSERT") {
             int a, b, w;
@@ -148,7 +131,7 @@ int main() {
             int a;
             cin >> a;
             try {
-                if (checkInvalid(a, 1, 1)) { // 1, 1 are arbitrary valid placeholders
+                if (checkInvalid(a, 1, 1)) { // 1, 1 are arbitrary valid placeholders, only need to check a
                     throw illegal_exception();
                 }
                 // if got here, everything is valid
@@ -177,7 +160,6 @@ int main() {
         } else if (cmd == "END") {
             break;
         }
-        // std::cout << "number of vertices is " << myGraph->getV() << std::endl;
     }
     delete myGraph;
 }

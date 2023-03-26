@@ -8,45 +8,45 @@
 class Graph {
     private:
         std::vector<std::tuple<int, int>>* adjacencyList;
-        int V;
+        int numberOfVertices;
         std::vector<int> existingVertices;
 
     public:
         Graph() {
             this->adjacencyList = new std::vector<std::tuple<int, int>> [50001];
-            this->V = 0;
+            this->numberOfVertices = 0;
         }
 
         ~Graph() {
             delete[] adjacencyList;
         }
 
-        int getV() {
-            return V;
+        int getNumberOfVertices() {
+            return numberOfVertices;
         }
 
         std::vector<std::tuple<int, int>> getAdjacencyList (int index) {
             return adjacencyList[index];
         }
 
-        int getAdjacencyListDest(int u, int i) {
-            return std::get<1>(adjacencyList[u][i]);
+        int getAdjacencyListDest(int firstIndex, int secondIndex) {
+            return std::get<1>(adjacencyList[firstIndex][secondIndex]);
         }
 
-        int getAdjacencyListWeight(int u, int i) {
-            return std::get<0>(adjacencyList[u][i]);
+        int getAdjacencyListWeight(int firstIndex, int secondIndex) {
+            return std::get<0>(adjacencyList[firstIndex][secondIndex]);
         }
 
-        int getAdjacencyListSize(int u) {
-            return adjacencyList[u].size();
+        int getAdjacencyListSize(int index) {
+            return adjacencyList[index].size();
         }
 
         int getExistingVerticeSize() {
             return existingVertices.size();
         }
 
-        int getExistingVertices(int i) {
-            return existingVertices[i];
+        int getExistingVertices(int index) {
+            return existingVertices[index];
         }
 
         void addEdge(int a, int b, int w, bool flag) {
@@ -62,11 +62,11 @@ class Graph {
                 std::cout << "success" << std::endl;
             }
             if (adjacencyList[a].size() == 0) {
-                V++;
+                numberOfVertices++;
                 existingVertices.push_back(a);
             }
             if (adjacencyList[b].size() == 0) {
-                V++;
+                numberOfVertices++;
                 existingVertices.push_back(b);
             }
             adjacencyList[a].push_back(std::make_tuple(w, b));
@@ -96,10 +96,9 @@ class Graph {
                 std::vector<std::tuple<int, int>> vertexVector = adjacencyList[vertexNumber];
                 for (int j = 0; j < vertexVector.size(); j++) { // remove connected edges from other vertices
                     if (std::get<1>(vertexVector[j]) == a) {
-                        // std::cout << "i got here" << std::endl;
                         adjacencyList[vertexNumber].erase(adjacencyList[vertexNumber].begin() + j);
                         if (adjacencyList[vertexNumber].size() == 0) {
-                            V--;
+                            numberOfVertices--;
                             for (int k = 0; k < existingVertices.size(); k++) { // remove vertex from existing vertices
                                 if (existingVertices[k] == vertexNumber) {
                                     existingVertices.erase(existingVertices.begin() + k);
@@ -107,13 +106,12 @@ class Graph {
                                 }
                             }
                         }
-                        // std::cout << "connected to " << vertexNumber << "is " << std::get<1>(adjacencyList[vertexNumber][0]);
                         break;
                     }
                 }
             }
             adjacencyList[a].clear(); // remove all edges from vertex a
-            V--;
+            numberOfVertices--;
             for (int i = 0; i < existingVertices.size(); i++) { // remove vertex from existing vertices
                 if (existingVertices[i] == a) {
                     existingVertices.erase(existingVertices.begin() + i);
