@@ -5,7 +5,6 @@
 
 #include "illegal_exception.h"
 #include "Graph.h"
-#include "MinHeap.h"
 
 using namespace std;
 
@@ -14,86 +13,6 @@ bool checkInvalid(int a, int b, int w) {
         return true;
     }
     return false;
-}
-
-void primMST(Graph* graph, bool flag) { // flag determines whether to output MST or cost
-    int numberOfVertices = graph->getNumberOfVertices();
-    if (numberOfVertices == 0) { // empty graph
-        if (flag) {
-            cout << "failure" << endl;
-        } else {
-            cout << "cost is 0" << endl;
-        }
-        return;
-    }
-    MinHeap *minHeap = new MinHeap(numberOfVertices);
-
-    int parent[numberOfVertices]; // stores constructed MST
-    int key[numberOfVertices]; // stores weight to get to corresponding vertice
-
-    int arrayToLink [50001]; // links from station number to vertex number
-    int arrayToLinkBack [numberOfVertices]; // links from vertex number to station number
-
-    // initialize all vertices (except 0th index) 
-    for (int i = 1; i < numberOfVertices; i++) {
-        parent[i] = -1; // no parent yet
-        key[i] = INT_MAX; // so that any edge is better than the default key
-        MinHeapNode* newNode = new MinHeapNode(i, key[i], graph->getExistingVertices(i));
-        minHeap->setArray(i, newNode);
-        minHeap->setArrayToDelete(i, newNode);
-        arrayToLink[graph->getExistingVertices(i)] = i;
-        arrayToLinkBack[i] = graph->getExistingVertices(i);
-        minHeap->setPos(i, i); // maps vertice to position in array
-    }
-
-    // setting 0th index
-    key[0] = 0;
-    MinHeapNode* newNode = new MinHeapNode(0, key[0], graph->getExistingVertices(0));
-    arrayToLink[graph->getExistingVertices(0)] = 0;
-    arrayToLinkBack[0] = graph->getExistingVertices(0);
-    minHeap->setArray(0, newNode);
-    minHeap->setArrayToDelete(0, newNode);
-    minHeap->setPos(0, 0);
-
-    // building heap
-    for (int i = numberOfVertices / 2; i > 0; i--) { // from floor(n/2) to 1
-        minHeap->minHeapify(i);
-    }
-
-    // minHeap has all nodes not in MST yet
-    while (minHeap->getSize() != 0) {
-        MinHeapNode* minHeapNode = minHeap->extractMin(); // this calls heapify
-        int currentStationNumber = minHeapNode->getStationNumber();
-        // check all adjacent destinations to (possibly) update their key values
-        for (int i = 0; i < graph->getAdjacencyListSize(currentStationNumber); i++) {
-            int currentDest = arrayToLink[graph->getAdjacencyListDest(currentStationNumber, i)]; // 0 to # of vertexes
-            // currentDest is only used for the index value for key, parent
-
-            if (minHeap->getPos(currentDest) < minHeap->getSize() // currentDest is not yet in MST
-                    && graph->getAdjacencyListWeight(minHeapNode->getStationNumber(), i) <= key[currentDest]) {
-                        // weight of edge is less than key value of currentDest
-                        // meaning need to update key
-                key[currentDest] = graph->getAdjacencyListWeight(minHeapNode->getStationNumber(), i); 
-                // set equal to the edge weight value
-                parent[currentDest] = minHeapNode->getVertexNumber(); // VertexNumber is how the nodes are linked through parent
-                minHeap->modifyKey(currentDest, key[currentDest]);
-            }
-        }
-    }
-    if (flag) { // print edges of MST
-        for (int i = 1; i < numberOfVertices; i++) {
-            cout << arrayToLinkBack[parent[i]] << " " << arrayToLinkBack[i] << " " << key[i] << " ";
-        }
-        cout << endl;
-    } else { // calculate cost
-        int sum = 0;
-        for (int i = 1; i < numberOfVertices; i++) {
-            sum += key[i];
-        }
-        cout << "cost is " << sum << endl;
-    }
-    delete minHeap;
-    return;
 }
 
 int main() {
@@ -154,9 +73,9 @@ int main() {
                 e.print();
             }
         } else if (cmd == "MST") {
-            primMST(myGraph, true);
+            myGraph->primMST(true);
         } else if (cmd == "COST") {
-            primMST(myGraph, false);
+            myGraph->primMST(false);
         } else if (cmd == "END") {
             break;
         }

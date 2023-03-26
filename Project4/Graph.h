@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <tuple>
 
+#include "MinHeap.h"
+
 class Graph {
     private:
         std::vector<std::tuple<int, int>>* adjacencyList;
@@ -47,7 +49,7 @@ class Graph {
 
         void addEdge(int a, int b, int w, bool flag) { // flag determines whether to output anything
             for (int i = 0; i < adjacencyList[a].size(); i++) {
-                if (std::get<1>(adjacencyList[a][i]) == b) { // edge is already in the graph
+                if (std::get<1>(adjacencyList[a][i]) == b) { // edge was found already in the graph
                     if (flag) {
                         std::cout << "failure" << std::endl;
                     }
@@ -116,6 +118,86 @@ class Graph {
                 }
             }
             std::cout << "success" << std::endl;
+            return;
+        }
+
+        void primMST(bool flag) { // flag determines whether to output MST or cost
+            int numberOfVertices = getNumberOfVertices();
+            if (numberOfVertices == 0) { // empty graph
+                if (flag) {
+                    cout << "failure" << endl;
+                } else {
+                    cout << "cost is 0" << endl;
+                }
+                return;
+            }
+            MinHeap *minHeap = new MinHeap(numberOfVertices);
+
+            int parent[numberOfVertices]; // stores constructed MST
+            int key[numberOfVertices]; // stores weight to get to corresponding vertice
+
+            int arrayToLink [50001]; // links from station number to vertex number
+            int arrayToLinkBack [numberOfVertices]; // links from vertex number to station number
+
+            // initialize all vertices (except 0th index) 
+            for (int i = 1; i < numberOfVertices; i++) {
+                parent[i] = -1; // no parent yet
+                key[i] = INT_MAX; // so that any edge is better than the default key
+                MinHeapNode* newNode = new MinHeapNode(i, key[i], getExistingVertices(i));
+                minHeap->setArray(i, newNode);
+                minHeap->setArrayToDelete(i, newNode);
+                arrayToLink[getExistingVertices(i)] = i;
+                arrayToLinkBack[i] = getExistingVertices(i);
+                minHeap->setPos(i, i); // maps vertice to position in array
+            }
+
+            // setting 0th index
+            key[0] = 0;
+            MinHeapNode* newNode = new MinHeapNode(0, key[0], getExistingVertices(0));
+            arrayToLink[getExistingVertices(0)] = 0;
+            arrayToLinkBack[0] = getExistingVertices(0);
+            minHeap->setArray(0, newNode);
+            minHeap->setArrayToDelete(0, newNode);
+            minHeap->setPos(0, 0);
+
+            // building heap
+            for (int i = numberOfVertices / 2; i > 0; i--) { // from floor(n/2) to 1
+                minHeap->minHeapify(i);
+            }
+
+            // minHeap has all nodes not in MST yet
+            while (minHeap->getSize() != 0) {
+                MinHeapNode* minHeapNode = minHeap->extractMin(); // this calls heapify
+                int currentStationNumber = minHeapNode->getStationNumber();
+                // check all adjacent destinations to (possibly) update their key values
+                for (int i = 0; i < getAdjacencyListSize(currentStationNumber); i++) {
+                    int currentDest = arrayToLink[getAdjacencyListDest(currentStationNumber, i)]; // 0 to # of vertexes
+                    // currentDest is only used for the index value for key, parent
+
+                    if (minHeap->getPos(currentDest) < minHeap->getSize() // currentDest is not yet in MST
+                            && getAdjacencyListWeight(minHeapNode->getStationNumber(), i) <= key[currentDest]) {
+                                // weight of edge is less than key value of currentDest
+                                // meaning need to update key
+                        key[currentDest] = getAdjacencyListWeight(minHeapNode->getStationNumber(), i); 
+                        // set equal to the edge weight value
+                        parent[currentDest] = minHeapNode->getVertexNumber(); // VertexNumber is how the nodes are linked through parent
+                        minHeap->modifyKey(currentDest, key[currentDest]);
+                    }
+                }
+            }
+            if (flag) { // print edges of MST
+                for (int i = 1; i < numberOfVertices; i++) {
+                    cout << arrayToLinkBack[parent[i]] << " " << arrayToLinkBack[i] << " " << key[i] << " ";
+                }
+                cout << endl;
+            } else { // calculate cost
+                int sum = 0;
+                for (int i = 1; i < numberOfVertices; i++) {
+                    sum += key[i];
+                }
+                cout << "cost is " << sum << endl;
+            }
+            delete minHeap;
             return;
         }
 };
