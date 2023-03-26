@@ -41,15 +41,11 @@ class Graph {
             return adjacencyList[index].size();
         }
 
-        int getExistingVerticeSize() {
-            return existingVertices.size();
-        }
-
         int getExistingVertices(int index) {
             return existingVertices[index];
         }
 
-        void addEdge(int a, int b, int w, bool flag) {
+        void addEdge(int a, int b, int w, bool flag) { // flag determines whether to output anything
             for (int i = 0; i < adjacencyList[a].size(); i++) {
                 if (std::get<1>(adjacencyList[a][i]) == b) { // edge is already in the graph
                     if (flag) {
@@ -58,14 +54,15 @@ class Graph {
                     return;
                 }
             }
+            // if got here, need to add the edge
             if (flag) {
                 std::cout << "success" << std::endl;
             }
-            if (adjacencyList[a].size() == 0) {
+            if (adjacencyList[a].size() == 0) { // adding a new vertice
                 numberOfVertices++;
                 existingVertices.push_back(a);
             }
-            if (adjacencyList[b].size() == 0) {
+            if (adjacencyList[b].size() == 0) { // adding a new vertice
                 numberOfVertices++;
                 existingVertices.push_back(b);
             }
@@ -91,15 +88,15 @@ class Graph {
                 std::cout << "failure" << std::endl;
                 return;
             }
-            for (int i = 0; i < adjacencyList[a].size(); i++) {
+            for (int i = 0; i < adjacencyList[a].size(); i++) { // O(E)
                 int vertexNumber = std::get<1>(adjacencyList[a][i]);
                 std::vector<std::tuple<int, int>> vertexVector = adjacencyList[vertexNumber];
-                for (int j = 0; j < vertexVector.size(); j++) { // remove connected edges from other vertices
+                for (int j = 0; j < vertexVector.size(); j++) { // O(E) remove connected edges from other vertices
                     if (std::get<1>(vertexVector[j]) == a) {
                         adjacencyList[vertexNumber].erase(adjacencyList[vertexNumber].begin() + j);
                         if (adjacencyList[vertexNumber].size() == 0) {
                             numberOfVertices--;
-                            for (int k = 0; k < existingVertices.size(); k++) { // remove vertex from existing vertices
+                            for (int k = 0; k < existingVertices.size(); k++) { // O(V) remove vertex from existing vertices
                                 if (existingVertices[k] == vertexNumber) {
                                     existingVertices.erase(existingVertices.begin() + k);
                                     break;

@@ -11,14 +11,14 @@ class MinHeap {
     private:
         int size; // current number of heap nodes in the heap
         int capacity; // max size of heap
-        int *pos; // Node position number in the heap (1, 2, 3, ...)
+        int *pos; // maps station number to array index
         MinHeapNode** array; // contains all vertices not yet added to MST
         MinHeapNode** arrayToDelete; // to delete all MinHeapNodes
 
     public:
         MinHeap(int capacity) {
-            this->size = capacity; // Initially size of min heap is equal to V
-            this->capacity = capacity;
+            this->size = capacity;
+            this->capacity = capacity; // for the destructor
             this->pos = new int [capacity];
             this->array = new MinHeapNode* [capacity];
             this->arrayToDelete = new MinHeapNode* [capacity];
@@ -38,10 +38,6 @@ class MinHeap {
             return;
         }
 
-        MinHeapNode* getArray(int index) {
-            return array[index];
-        } 
-
         void setArray(int index, MinHeapNode* minHeapNode) {
             array[index] = minHeapNode;
             return;
@@ -54,11 +50,6 @@ class MinHeap {
         void setPos(int index, int value) {
             pos[index] = value;
             return;
-        }
-
-        void setSize(int size) {
-            this->size = size;
-            return; 
         }
 
         int getSize() {
@@ -102,7 +93,7 @@ class MinHeap {
             if (size == 0)
                 return NULL;
         
-            MinHeapNode* minNode = array[0];
+            MinHeapNode* minNode = array[0]; // root is the min node
         
             // swap root and last node
             MinHeapNode* lastNode = array[size - 1];
@@ -122,10 +113,8 @@ class MinHeap {
         }
 
         void modifyKey(int currentDest, int key) {
-            // index of current destination
+            // update key of index of current destination
             int i = pos[currentDest];
-        
-            // update key
             array[i]->setKey(key);
         
             int parent = (i - 1) / 2;

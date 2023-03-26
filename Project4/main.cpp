@@ -16,13 +16,13 @@ bool checkInvalid(int a, int b, int w) {
     return false;
 }
 
-void primMST(Graph* graph, bool flag) {
+void primMST(Graph* graph, bool flag) { // flag determines whether to output MST or cost
     int numberOfVertices = graph->getNumberOfVertices();
     if (numberOfVertices == 0) { // empty graph
         if (flag) {
-            std::cout << "failure" << std::endl;
+            cout << "failure" << endl;
         } else {
-            std::cout << "cost is 0" << std::endl;
+            cout << "cost is 0" << endl;
         }
         return;
     }
@@ -31,8 +31,8 @@ void primMST(Graph* graph, bool flag) {
     int parent[numberOfVertices]; // stores constructed MST
     int key[numberOfVertices]; // stores weight to get to corresponding vertice
 
-    int arrayToLink [50001];
-    int arrayToLinkBack [numberOfVertices];
+    int arrayToLink [50001]; // links from station number to vertex number
+    int arrayToLinkBack [numberOfVertices]; // links from vertex number to station number
 
     // initialize all vertices (except 0th index) 
     for (int i = 1; i < numberOfVertices; i++) {
@@ -56,7 +56,7 @@ void primMST(Graph* graph, bool flag) {
     minHeap->setPos(0, 0);
 
     // building heap
-    for (int i = numberOfVertices/2; i > 0; i--) {
+    for (int i = numberOfVertices / 2; i > 0; i--) { // from floor(n/2) to 1
         minHeap->minHeapify(i);
     }
 
@@ -103,7 +103,7 @@ int main() {
         if (cmd == "LOAD") {
             string fName;
             cin >> fName;
-            ifstream fin(fName.c_str()); // Note we are using the variable as the filename
+            ifstream fin(fName.c_str()); // variable as filename
             int a, b, w;
             fin >> a; // don't need number of vertices
             while (fin >> a) {
@@ -131,7 +131,7 @@ int main() {
             int a;
             cin >> a;
             try {
-                if (checkInvalid(a, 1, 1)) { // 1, 1 are arbitrary valid placeholders, only need to check a
+                if (checkInvalid(a, 1, 1)) { // 1, 1 are arbitrary valid placeholders to check a
                     throw illegal_exception();
                 }
                 // if got here, everything is valid

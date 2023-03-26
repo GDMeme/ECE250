@@ -13,7 +13,7 @@ class MinHeapNode {
             this->stationNumber = stationNumber;
         }
 
-        ~MinHeapNode() {}
+        ~MinHeapNode() { }
 
         int getKey() {
             return key;
