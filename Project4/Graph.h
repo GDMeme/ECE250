@@ -27,10 +27,6 @@ class Graph {
             return numberOfVertices;
         }
 
-        std::vector<std::tuple<int, int>> getAdjacencyList (int index) {
-            return adjacencyList[index];
-        }
-
         int getAdjacencyListDest(int firstIndex, int secondIndex) {
             return std::get<1>(adjacencyList[firstIndex][secondIndex]);
         }
