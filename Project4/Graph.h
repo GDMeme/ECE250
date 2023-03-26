@@ -25,12 +25,20 @@ class Graph {
             return V;
         }
 
+        std::vector<std::tuple<int, int>> getAdjacencyList (int index) {
+            return adjacencyList[index];
+        }
+
         int getAdjacencyListDest(int u, int i) {
             return std::get<1>(adjacencyList[u][i]);
         }
 
         int getAdjacencyListWeight(int u, int i) {
             return std::get<0>(adjacencyList[u][i]);
+        }
+
+        int getAdjacencyListSize(int u) {
+            return adjacencyList[u].size();
         }
 
         int getExistingVerticeSize() {
@@ -90,6 +98,15 @@ class Graph {
                     if (std::get<1>(vertexVector[j]) == a) {
                         // std::cout << "i got here" << std::endl;
                         adjacencyList[vertexNumber].erase(adjacencyList[vertexNumber].begin() + j);
+                        if (adjacencyList[vertexNumber].size() == 0) {
+                            V--;
+                            for (int k = 0; k < existingVertices.size(); k++) { // remove vertex from existing vertices
+                                if (existingVertices[k] == vertexNumber) {
+                                    existingVertices.erase(existingVertices.begin() + k);
+                                    break;
+                                }
+                            }
+                        }
                         // std::cout << "connected to " << vertexNumber << "is " << std::get<1>(adjacencyList[vertexNumber][0]);
                         break;
                     }

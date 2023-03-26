@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <vector>
 #include <tuple>
 
@@ -8,21 +9,33 @@
 class MinHeap {
 
     private:
-        int size;
-        int capacity;
-        int *pos;
-        std::vector<MinHeapNode*> array;
+        int size; // current number of heap nodes in the heap
+        int capacity; // max size of heap
+        int *pos; // Node position number in the heap (1, 2, 3, ...)
+        MinHeapNode** array; // contains all vertices not yet added to MST
+        MinHeapNode** arrayToDelete; // to delete all MinHeapNodes
 
     public:
-        MinHeap() {
-            this->size = 0;
-            this->capacity = 0;
+        MinHeap(int capacity) {
+            this->size = capacity; // Initially size of min heap is equal to V
+            this->capacity = capacity;
+            this->pos = new int [capacity];
+            this->array = new MinHeapNode* [capacity];
+            this->arrayToDelete = new MinHeapNode* [capacity];
         }
 
         ~MinHeap() {
-            for (int i = 0; i < array.size(); i++) {
-                delete array[i];
+            for (int i = 0; i < capacity; i++) {
+                delete arrayToDelete[i];
             }
+            delete[] arrayToDelete;
+            delete[] array;
+            delete[] pos;
+        }
+
+        void setArrayToDelete(int index, MinHeapNode* newNode) {
+            arrayToDelete[index] = newNode;
+            return;
         }
 
         MinHeapNode* getArray(int index) {
@@ -52,12 +65,6 @@ class MinHeap {
             return size;
         }
 
-        void swapMinHeapNode(MinHeapNode **a, MinHeapNode **b) {
-            MinHeapNode *temp = *a;
-            *a = *b;
-            *b = temp;
-        }
-
         void minHeapify(MinHeap* minHeap, int idx) {
             int smallest, left, right;
             smallest = idx;
@@ -65,14 +72,19 @@ class MinHeap {
             right = 2 * idx + 2;
         
             if (left < minHeap->size && minHeap->array[left]->getKey() < minHeap->array[smallest]->getKey()) {
+                // std::cout << "i got here" << std::endl;
+                // std::cout << "left is " << left << std::endl;
+                // std::cout << minHeap->size << std::endl << minHeap->array[left]->getKey() << std::endl << minHeap->array[smallest]->getKey() << std::endl;
                 smallest = left;
             }
         
             if (right < minHeap->size && minHeap->array[right]->getKey() < minHeap->array[smallest]->getKey()) {
+                // std::cout << "smallest=right" << std::endl;
                 smallest = right;
             }
         
             if (smallest != idx) { // need to swap
+                // std::cout << "nee dto swap" << std::endl;
                 // The nodes to be swapped in min heap
                 MinHeapNode* smallestNode = minHeap->array[smallest];
                 MinHeapNode* idxNode = minHeap->array[idx];
@@ -82,8 +94,14 @@ class MinHeap {
                 minHeap->pos[idxNode->getV()] = smallest;
         
                 // Swap nodes
-                swapMinHeapNode(&minHeap->array[smallest], &minHeap->array[idx]);
-        
+                MinHeapNode* temp = smallestNode;
+                minHeap->array[smallest] = idxNode;
+                minHeap->array[idx] = temp;
+                // std::cout << "array start" << std::endl;
+                // for (int i = 0; i < 4; i++) {
+                //     std::cout << minHeap->array[i]->getKey() << " ";
+                // }
+                // std::cout << std::endl;
                 minHeapify(minHeap, smallest);
             }
         }
@@ -104,15 +122,15 @@ class MinHeap {
             minHeap->pos[lastNode->getV()] = 0;
         
             // Reduce heap size and heapify root
-            --minHeap->size;
+            minHeap->size--;
             minHeapify(minHeap, 0);
         
             return root;
         }
 
-        void decreaseKey(struct MinHeap* minHeap, int v, int key) {
-            // Get the index of v in  heap array
-            int i = minHeap->pos[v];
+        void decreaseKey(MinHeap* minHeap, int currentDest, int key) {
+            // Get the index of v in heap array
+            int i = minHeap->pos[currentDest];
         
             // Get the node and update its key value
             minHeap->array[i]->setKey(key);
@@ -123,7 +141,11 @@ class MinHeap {
                 // Swap this node with its parent
                 minHeap->pos[minHeap->array[i]->getV()] = (i - 1) / 2;
                 minHeap->pos[minHeap->array[(i - 1) / 2]->getV()] = i;
-                swapMinHeapNode(&minHeap->array[i], &minHeap->array[(i - 1) / 2]);
+
+                MinHeapNode *temp = minHeap->array[i];
+                minHeap->array[i] = minHeap->array[(i - 1) / 2];
+                minHeap->array[(i - 1) / 2] = temp;
+                // swapMinHeapNode(&minHeap->array[i], &minHeap->array[(i - 1) / 2]);
         
                 // move to parent index
                 i = (i - 1) / 2;
