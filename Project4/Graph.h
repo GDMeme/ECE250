@@ -91,25 +91,25 @@ class Graph {
                 std::vector<std::tuple<int, int>> vertexVector = adjacencyList[vertexNumber];
                 for (int j = 0; j < vertexVector.size(); j++) { // O(E) remove connected edges from other vertices
                     if (std::get<1>(vertexVector[j]) == a) {
-                        adjacencyList[vertexNumber].erase(adjacencyList[vertexNumber].begin() + j);
-                        if (adjacencyList[vertexNumber].size() == 0) {
-                            numberOfVertices--;
-                            for (int k = 0; k < existingVertices.size(); k++) { // O(V) remove vertex from existing vertices
-                                if (existingVertices[k] == vertexNumber) {
-                                    existingVertices.erase(existingVertices.begin() + k);
-                                    break;
-                                }
-                            }
-                        }
+                        adjacencyList[vertexNumber].erase(adjacencyList[vertexNumber].begin() + j); // O(E)
                         break;
+                    }
+                }
+                if (adjacencyList[vertexNumber].size() == 0) {
+                    numberOfVertices--;
+                    for (int k = 0; k < existingVertices.size(); k++) { // O(V) remove vertex from existing vertices
+                        if (existingVertices[k] == vertexNumber) {
+                            existingVertices.erase(existingVertices.begin() + k); // O(V)
+                            break;
+                        }
                     }
                 }
             }
             adjacencyList[a].clear(); // remove all edges from vertex a
             numberOfVertices--;
-            for (int i = 0; i < existingVertices.size(); i++) { // remove vertex from existing vertices
+            for (int i = 0; i < existingVertices.size(); i++) { // O(V) remove vertex from existing vertices
                 if (existingVertices[i] == a) {
-                    existingVertices.erase(existingVertices.begin() + i);
+                    existingVertices.erase(existingVertices.begin() + i); // O(V)
                     break;
                 }
             }
@@ -121,9 +121,9 @@ class Graph {
             int numberOfVertices = getNumberOfVertices();
             if (numberOfVertices == 0) { // empty graph
                 if (flag) {
-                    cout << "failure" << endl;
+                    std::cout << "failure" << std::endl;
                 } else {
-                    cout << "cost is 0" << endl;
+                    std::cout << "cost is 0" << std::endl;
                 }
                 return;
             }
@@ -185,13 +185,13 @@ class Graph {
                 for (int i = 1; i < numberOfVertices; i++) {
                     cout << arrayToLinkBack[parent[i]] << " " << arrayToLinkBack[i] << " " << key[i] << " ";
                 }
-                cout << endl;
+                std::cout << std::endl;
             } else { // calculate cost
                 int sum = 0;
                 for (int i = 1; i < numberOfVertices; i++) {
                     sum += key[i];
                 }
-                cout << "cost is " << sum << endl;
+                std::cout << "cost is " << sum << std::endl;
             }
             delete minHeap;
             return;
