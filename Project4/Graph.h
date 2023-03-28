@@ -183,7 +183,7 @@ class Graph {
             }
             if (flag) { // print edges of MST
                 for (int i = 1; i < numberOfVertices; i++) {
-                    cout << arrayToLinkBack[parent[i]] << " " << arrayToLinkBack[i] << " " << key[i] << " ";
+                    std::cout << arrayToLinkBack[parent[i]] << " " << arrayToLinkBack[i] << " " << key[i] << " ";
                 }
                 std::cout << std::endl;
             } else { // calculate cost
