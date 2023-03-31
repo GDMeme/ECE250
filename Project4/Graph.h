@@ -129,11 +129,11 @@ class Graph {
             }
             MinHeap *minHeap = new MinHeap(numberOfVertices);
 
-            int parent[numberOfVertices]; // stores constructed MST
-            int key[numberOfVertices]; // stores weight to get to corresponding vertice
+            int* parent = new int [numberOfVertices]; // stores constructed MST
+            int* key = new int [numberOfVertices]; // stores weight to get to corresponding vertice
 
             int arrayToLink [50001]; // links from station number to vertex number
-            int arrayToLinkBack [numberOfVertices]; // links from vertex number to station number
+            int* arrayToLinkBack = new int [numberOfVertices]; // links from vertex number to station number
 
             // initialize all vertices (except 0th index) 
             for (int i = 1; i < numberOfVertices; i++) {
@@ -194,6 +194,9 @@ class Graph {
                 std::cout << "cost is " << sum << std::endl;
             }
             delete minHeap;
+            delete[] parent;
+            delete[] key;
+            delete[] arrayToLinkBack;
             return;
         }
 };
