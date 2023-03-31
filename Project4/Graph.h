@@ -144,7 +144,7 @@ class Graph {
                 minHeap->setArrayToDelete(i, newNode);
                 arrayToLink[getExistingVertices(i)] = i;
                 arrayToLinkBack[i] = getExistingVertices(i);
-                minHeap->setPos(i, i); // maps vertice to position in array
+                minHeap->setStationToIndex(i, i); // maps vertice to position in array
             }
 
             // setting 0th index
@@ -154,7 +154,7 @@ class Graph {
             arrayToLinkBack[0] = getExistingVertices(0);
             minHeap->setArray(0, newNode);
             minHeap->setArrayToDelete(0, newNode);
-            minHeap->setPos(0, 0);
+            minHeap->setStationToIndex(0, 0);
 
             // building heap
             for (int i = numberOfVertices / 2; i > 0; i--) { // from floor(n/2) to 1
@@ -170,7 +170,7 @@ class Graph {
                     int currentDest = arrayToLink[getAdjacencyListDest(currentStationNumber, i)]; // 0 to # of vertexes
                     // currentDest is only used for the index value for key, parent
 
-                    if (minHeap->getPos(currentDest) < minHeap->getSize() // currentDest is not yet in MST
+                    if (minHeap->getStationToIndex(currentDest) < minHeap->getSize() // currentDest is not yet in MST
                             && getAdjacencyListWeight(minHeapNode->getStationNumber(), i) <= key[currentDest]) {
                                 // weight of edge is less than key value of currentDest
                                 // meaning need to update key

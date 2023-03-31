@@ -11,7 +11,7 @@ class MinHeap {
     private:
         int size; // current number of heap nodes in the heap
         int capacity; // max size of heap
-        int *pos; // maps station number to array index
+        int *stationToIndex; // maps station number to array index
         MinHeapNode** array; // contains all vertices not yet added to MST
         MinHeapNode** arrayToDelete; // to delete all MinHeapNodes
 
@@ -19,7 +19,7 @@ class MinHeap {
         MinHeap(int capacity) {
             this->size = capacity;
             this->capacity = capacity; // for the destructor
-            this->pos = new int [capacity];
+            this->stationToIndex = new int [capacity];
             this->array = new MinHeapNode* [capacity];
             this->arrayToDelete = new MinHeapNode* [capacity];
         }
@@ -30,7 +30,7 @@ class MinHeap {
             }
             delete[] arrayToDelete;
             delete[] array;
-            delete[] pos;
+            delete[] stationToIndex;
         }
 
         void setArrayToDelete(int index, MinHeapNode* newNode) {
@@ -43,12 +43,12 @@ class MinHeap {
             return;
         }
 
-        int getPos(int index) {
-            return pos[index];
+        int getStationToIndex(int index) {
+            return stationToIndex[index];
         }
 
-        void setPos(int index, int value) {
-            pos[index] = value;
+        void setStationToIndex(int index, int value) {
+            stationToIndex[index] = value;
             return;
         }
 
@@ -72,13 +72,13 @@ class MinHeap {
                 smallest = rightChild;
             }
         
-            if (smallest != index) { // need to swap
+            if (smallest != index) { // new smallest found, need to swap
                 MinHeapNode* smallestNode = array[smallest];
                 MinHeapNode* indexNode = array[index];
         
-                // swap positions
-                pos[smallestNode->getVertexNumber()] = index;
-                pos[indexNode->getVertexNumber()] = smallest;
+                // swap positions in stationToIndex
+                stationToIndex[smallestNode->getVertexNumber()] = index;
+                stationToIndex[indexNode->getVertexNumber()] = smallest;
         
                 // swap nodes in array
                 MinHeapNode* temp = smallestNode;
@@ -90,18 +90,15 @@ class MinHeap {
         }
 
         MinHeapNode* extractMin() {
-            if (size == 0)
-                return NULL;
-        
             MinHeapNode* minNode = array[0]; // root is the min node
         
-            // swap root and last node
+            // put last node as root node
             MinHeapNode* lastNode = array[size - 1];
             array[0] = lastNode;
         
-            // update position of root and last node
-            pos[minNode->getVertexNumber()] = size - 1;
-            pos[lastNode->getVertexNumber()] = 0;
+            // update position of root and last node in stationToIndex
+            stationToIndex[minNode->getVertexNumber()] = size - 1;
+            stationToIndex[lastNode->getVertexNumber()] = 0;
         
             // reduce heap size (gets rid of extracted minimum node)
             size--;
@@ -112,25 +109,26 @@ class MinHeap {
             return minNode;
         }
 
-        void modifyKey(int currentDest, int key) {
+        void modifyKey(int currentDest, int key) { 
             // update key of index of current destination
-            int i = pos[currentDest];
+            int i = stationToIndex[currentDest];
             array[i]->setKey(key);
         
             int parent = (i - 1) / 2;
 
             // heapify
-            while (i && 
+            while (i > 0 && 
                     array[i]->getKey() < array[parent]->getKey()) { // need to swap
-                // swap positions
-                pos[array[i]->getVertexNumber()] = (i - 1) / 2;
-                pos[array[parent]->getVertexNumber()] = i;
+                // swap positions in stationToIndex
+                stationToIndex[array[i]->getVertexNumber()] = (i - 1) / 2;
+                stationToIndex[array[parent]->getVertexNumber()] = i;
 
                 // swap nodes in array
                 MinHeapNode *temp = array[i];
                 array[i] = array[parent];
                 array[parent] = temp;
         
+                // update i and parent value
                 i = (i - 1) / 2;
                 parent = (i - 1) / 2;
             }
