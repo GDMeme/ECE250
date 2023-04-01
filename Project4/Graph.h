@@ -140,8 +140,8 @@ class Graph {
                 parent[i] = -1; // no parent yet
                 key[i] = INT_MAX; // so that any edge is better than the default key
                 MinHeapNode* newNode = new MinHeapNode(i, key[i], getExistingVertices(i));
-                minHeap->setArray(i, newNode);
-                minHeap->setArrayToDelete(i, newNode);
+                minHeap->setUnknownVertices(i, newNode);
+                minHeap->setVerticesToDelete(i, newNode);
                 arrayToLink[getExistingVertices(i)] = i;
                 arrayToLinkBack[i] = getExistingVertices(i);
                 minHeap->setStationToIndex(i, i); // maps vertice to position in array
@@ -152,8 +152,8 @@ class Graph {
             MinHeapNode* newNode = new MinHeapNode(0, key[0], getExistingVertices(0));
             arrayToLink[getExistingVertices(0)] = 0;
             arrayToLinkBack[0] = getExistingVertices(0);
-            minHeap->setArray(0, newNode);
-            minHeap->setArrayToDelete(0, newNode);
+            minHeap->setUnknownVertices(0, newNode);
+            minHeap->setVerticesToDelete(0, newNode);
             minHeap->setStationToIndex(0, 0);
 
             // building heap
