@@ -56,43 +56,43 @@ class MinHeap {
             return size;
         }
 
-        void minHeapify(int index) {
-            int smallest, leftChild, rightChild;
-            smallest = index;
+        void minHeapify(int index) { // start at index node and go down the tree, swapping if needed
+            int currentSmallest, leftChild, rightChild;
+            currentSmallest = index;
             leftChild = 2 * index + 1;
             rightChild = 2 * index + 2;
         
-            if (leftChild < size && // left child exists in the heap
-                    array[leftChild]->getKey() < array[smallest]->getKey()) { // new smallest found
-                smallest = leftChild;
+            if (leftChild < size && // left child exists in the heap so no index out of bound
+                    array[leftChild]->getKey() < array[currentSmallest]->getKey()) { // new smallest found
+                currentSmallest = leftChild;
             }
         
-            if (rightChild < size && // right child exists in the heap
-                    array[rightChild]->getKey() < array[smallest]->getKey()) { // new smallest found
-                smallest = rightChild;
+            if (rightChild < size && // right child exists in the heap so no index out of bound
+                    array[rightChild]->getKey() < array[currentSmallest]->getKey()) { // new smallest found
+                currentSmallest = rightChild;
             }
         
-            if (smallest != index) { // new smallest found, need to swap
-                MinHeapNode* smallestNode = array[smallest];
+            if (currentSmallest != index) { // new smallest found, need to swap
+                MinHeapNode* smallestNode = array[currentSmallest];
                 MinHeapNode* indexNode = array[index];
         
                 // swap positions in stationToIndex
                 stationToIndex[smallestNode->getVertexNumber()] = index;
-                stationToIndex[indexNode->getVertexNumber()] = smallest;
+                stationToIndex[indexNode->getVertexNumber()] = currentSmallest;
         
                 // swap nodes in array
                 MinHeapNode* temp = smallestNode;
-                array[smallest] = indexNode;
+                array[currentSmallest] = indexNode;
                 array[index] = temp;
 
-                minHeapify(smallest);
+                minHeapify(currentSmallest);
             }
         }
 
         MinHeapNode* extractMin() {
             MinHeapNode* minNode = array[0]; // root is the min node
         
-            // put last node as root node
+            // put last node as root node in array
             MinHeapNode* lastNode = array[size - 1];
             array[0] = lastNode;
         
@@ -103,7 +103,7 @@ class MinHeap {
             // reduce heap size (gets rid of extracted minimum node)
             size--;
 
-            // heapify root
+            // heapify root (make in a min heap again)
             minHeapify(0);
         
             return minNode;
@@ -116,9 +116,10 @@ class MinHeap {
         
             int parent = (i - 1) / 2;
 
-            // heapify
-            while (i > 0 && 
-                    array[i]->getKey() < array[parent]->getKey()) { // need to swap
+            // make it a min heap again
+            // different than minHeapify so can't call that
+            // starting from currentDest and going up the tree, swapping if needed
+            while (i > 0 && array[i]->getKey() < array[parent]->getKey()) { // need to swap
                 // swap positions in stationToIndex
                 stationToIndex[array[i]->getVertexNumber()] = (i - 1) / 2;
                 stationToIndex[array[parent]->getVertexNumber()] = i;
