@@ -156,11 +156,6 @@ class Graph {
             minHeap->setVerticesToDelete(0, newNode);
             minHeap->setStationToIndex(0, 0);
 
-            // building heap
-            for (int i = numberOfVertices / 2; i > 0; i--) { // from floor(n/2) to 1
-                minHeap->minHeapify(i);
-            }
-
             // minHeap has all nodes not in MST yet
             while (minHeap->getSize() != 0) {
                 MinHeapNode* minHeapNode = minHeap->extractMin(); // this calls heapify
